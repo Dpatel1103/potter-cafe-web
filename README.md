@@ -2,115 +2,148 @@
 
 > *"Expecto Caffeine! Purveyors of fine artisan brews, glowing signature potions, and magical pastries."*
 
-A responsive, single-file full-stack demo web application built with vanilla HTML5, CSS3, and modern JavaScript, featuring a reactive in-memory state store with `localStorage` and multi-tab synchronization, procedural Web Audio API sound synthesis, and real-time dual-interface architecture.
+A modern, responsive full-stack web application built with **Next.js 16 (App Router)**, **TypeScript**, and **Tailwind CSS**, featuring a reactive real-time database architecture powered by **Supabase Realtime**, procedural Web Audio API sound synthesis, dual customer/admin roles, dynamic UPI QR checkout, and live 5-step order tracking.
 
 ---
 
 ## ⚡ Key Highlights & Features
 
-### 1. Dual-Interface Architecture (Top Navigation Bar)
-- **Client View ("The Great Hall")**: Full customer menu browsing, real-time inventory-aware cart drawer, interactive checkout form, mock dynamic UPI QR code generator, and live 5-step order tracking.
-- **Staff / Admin View ("The Ministry Operations Deck")**: Real-time operations metrics bar, live order management queue, courier dispatch workflow, and instant daily inventory stock manager.
-- **Live Sync**: Open the application in two tabs or windows—actions performed in the Staff View (accepting orders, dispatching owls, marking delivered, or toggling stock) instantly update the Customer View in real time via the HTML5 `storage` event pipeline.
-
----
-
-### 2. Visual Aesthetic & Design System
-- **Obsidian & Deep Velvet Palette**: `#0a080c`, `#120e17`, and `#181320` base backgrounds with ambient golden stardust particles running on an ultra-lightweight HTML5 Canvas.
-- **Typography**: Google Fonts **Cinzel Decorative** and **Cinzel** for wizarding headers, crests, and branding, paired with **Plus Jakarta Sans** for crisp, legible UI elements and forms.
-- **Accents & Glowing Highlights**: Warm gold (`#f59e0b`, `#fbbf24`), subtle emerald potion glows (`#10b981`), delicate gold borders (`1px solid rgba(245, 158, 11, 0.22)`), and frosted glassmorphism.
-- **Zero External Graphic Dependencies**: Detailed, custom vector SVG artwork embedded directly for potions, cauldrons, snitches, and coffee cups.
-
----
-
-### 3. Client View (Customer Experience)
-- **The Daily Menu Board**:
-  - Filterable categories: **Signature Potions**, **Artisan Brews**, and **Magical Bakes**.
-  - Wizarding menu items:
-    - *Butterscotch Cold Brew* (₹280) — 18-hour cold steeped with clotted butter-cream foam.
-    - *Polyjuice Sparkler* (₹340) — Effervescent kiwi, lime, and edible pearl shimmer.
-    - *Felix Felicis Gold Elixir* (₹380) — Saffron, wild honey, and 24K edible gold flakes (+100 Luck Boost).
-    - *Cauldron Hand Pie* (₹240) — Dark cocoa crust with bubbling berry compote.
-    - *Dragon's Breath Dark Roast* (₹220) — High caffeine with a whisper of volcanic smoke.
-    - *Amortentia Berry Latte* (₹320) — Rose oat milk with mother-of-pearl steam.
-    - *Golden Snitch Honey Macaron* (₹190) — Honeycomb buttercream with spun sugar wings.
-    - *Mandrake Root Cortado* (₹260) — Roasted chicory and ginseng infusion.
-    - *Pumpkin Pasty of the Express* (₹210) — Heirloom pumpkin, nutmeg, and toasted pecans.
-  - Interactive "+ Add to Cart" buttons that dynamically validate stock.
-- **Enchanted Cauldron Cart & Slide-Over Checkout**:
-  - Floating and top navigation cart counters with live item counts.
-  - Slide-over drawer with quantity steppers (`-` / `+`), item subtotal, 5% Ministry tax, and Owl Post delivery fee.
-  - Delivery Details Form: Full Name, Owl Contact / Phone, Delivery Chamber / Dormitory, and Owl Delivery Notes.
-  - Payment Options:
-    - **Instant UPI**: Displays a mock dynamic QR code and UPI ID (`espresso.patronum@magicbank`).
-    - **Owl Cash on Delivery (COD)**: Galleons or Rupees collected upon owl arrival.
-- **Live 5-Step Order Tracking Modal**:
-  - Visual animated progress bar:
-    1. **Placed** (Wand icon / Logged in Great Hall)
-    2. **Accepted** (Barista stamp / Queued in kitchen)
-    3. **Brewing** (Cauldron boiling / Concoction extraction)
-    4. **Out for Delivery** (Owl aloft / Dispatched with courier)
-    5. **Delivered** (Trophy / Safely arrived at dormitory)
-  - Dynamic status messaging and courier badge displaying the assigned delivery owl.
-
----
-
-### 4. Staff / Admin View (Live Operations Dashboard)
-- **Live Operations Bar**:
-  - **Total Revenue (₹)**: Auto-calculated across all settled orders.
-  - **Pending Orders**: Orders awaiting barista acceptance.
-  - **Active Brews**: Orders currently accepted and boiling in cauldrons.
-  - **Delivered Orders**: Completed owl deliveries.
-- **Live Orders Queue Grid**:
-  - Filter by order lifecycle: *All Orders*, *Placed*, *Brewing*, *Out for Delivery*, *Delivered*.
-  - Customer details, ordered items, and payment method tag (`UPI` / `COD`).
-  - **Action Controls**:
-    - `[✓ Accept Order]`: Acknowledges ticket and moves order to Accepted state.
-    - `[🔥 Start Brewing]`: Begins preparation in the brewing cauldrons.
-    - `[🦉 Assign Delivery Partner]`: Opens the courier dispatch modal with choice of couriers (*Hedwig*, *Errol*, *Neville Longbottom*, *Floo Powder Express*).
+### 1. Dual-Interface Architecture
+- **Customer Portal (`/`)**: 
+  - Categorized apothecary menu board (*Signature Potions*, *Artisan Brews*, *Magical Bakes*).
+  - Search by potion name, ingredients, lore, and magical attributes.
+  - Interactive "+ Add to Cauldron" buttons that dynamically validate inventory stock.
+  - Slide-over **Cart Drawer** with item breakdown, quantity steppers, Ministry tax (5%), and Owl Post fees.
+  - Delivery information form (Full Name, Owl Contact, Dormitory Chamber, Owl Delivery Notes).
+  - Payment options: **Instant UPI** with dynamic mock QR code & copyable UPI ID (`espresso.patronum@magicbank`) vs **Owl Cash on Delivery (COD)**.
+  - **Live Marauder's Order Tracker** (5-step visual stepper: *Placed* → *Accepted* → *Brewing* → *Out for Delivery* → *Delivered*).
+- **Staff / Admin Portal (`/admin`)**:
+  - **Ministry Operations Deck** with real-time KPI cards (*Total Revenue ₹*, *Pending Orders*, *Active Brews*, *Out for Delivery*).
+  - **Live Orders Queue** with status filters and action triggers:
+    - `[✓ Accept Order]`: Acknowledges ticket and updates customer view to *Accepted* with dynamic alert.
+    - `[🔥 Start Brewing]`: Begins preparation in the cauldrons.
+    - `[🦉 Assign Delivery Partner]`: Opens courier modal to dispatch *Hedwig*, *Errol*, *Neville Longbottom*, or *Floo Powder Express*.
     - `[★ Mark Delivered]`: Completes delivery lifecycle and updates vault revenue.
-  - `[Simulate Incoming Order]`: Generates realistic sample orders for instant testing.
-- **Daily Inventory Manager**:
-  - Table of all menu items with category, name, and price.
-  - Toggle switches to mark items **In Stock** or **Sold Out**, which instantly disables/enables adding to cart on the customer menu.
+    - `[⚡ Simulate Incoming Order]`: Spawns instant realistic customer orders for rapid demonstration.
+  - **Apothecary Inventory Manager**: Real-time stock toggle (*In Stock* vs *Sold Out*) that instantly disables adding sold-out items across all client tabs.
 
 ---
 
-### 5. Procedural Web Audio API Engine
-- Zero external audio files required; synthesizes crystal-clear wizarding chimes natively in the browser:
-  - **Ascending Harp Ping**: Played upon adding items to the cauldron cart.
-  - **Celestial Ascending Chord** (`E5 → G#5 → B5 → E6`): Played upon order placement.
-  - **Double Bell Chime**: Alert sounded on staff order actions.
-  - **Triumphant Brass / Sparkle Chime**: Played on successful delivery completion.
-- One-click mute/unmute button with persistent audio state.
+### 2. Supabase Realtime Database & Multi-Tab Synchronization
+- **Postgres Realtime Replication**: Subscribed via `postgres_changes` on the `orders` and `menu_items` tables.
+- **Custom Hooks**:
+  - `src/hooks/useRealtimeOrders.ts`: Automatically listens to new incoming orders, state transitions (`Accepted`, `Out for Delivery`, `Delivered`), and courier assignments.
+  - `src/hooks/useRealtimeMenu.ts`: Listens to stock availability changes so toggling an item out of stock in admin instantly updates client menu cards and cart validation.
+- **Zero-Config Hybrid Fallback**:
+  - When Supabase credentials are provided in `.env.local`, the application streams live changes via Supabase WebSocket channels.
+  - If running offline or without credentials, it falls back seamlessly to the browser's `BroadcastChannel` + `localStorage` pipeline without crashing!
 
 ---
 
-## 🚀 How to Run Locally
+### 3. Visual Aesthetic & Design System
+- **Dark Wizarding Apothecary Palette**:
+  - Obsidian Base: `#0d0b0e` & `#0a080c`
+  - Violet-Tinted Slate Cards: `#16121b` (hover: `#221a2a`)
+  - Amber Gold Highlights: `#f59e0b`, `#d97706`, `#fbbf24`
+  - Emerald Accents: `#10b981`, `#059669`
+- **Typography**: Google Fonts **Cinzel Decorative** & **Cinzel** for wizarding headers, paired with **Plus Jakarta Sans** for forms and body copy.
+- **Ambient Stardust Particle Canvas**: Floating golden and emerald dust particles running on an ultra-lightweight canvas.
+- **Procedural Web Audio API Engine**: Crystal-clear native synthesized sound effects (Wand clicks, Add-to-cart harp, Order-placed celestial chord, Staff chime, Delivery fanfare) with mute/unmute control.
 
-Because the application is completely self-contained in a single file, you can run it in multiple ways:
+---
 
-### Option A: Double-Click (Direct File Opening)
-Double-click `potter-cafe-web/index.html` to open it directly in Google Chrome, Microsoft Edge, Mozilla Firefox, or Safari.
+## 🛠️ Environment Configuration Setup
 
-### Option B: Local HTTP Server (Recommended)
-From the project folder, run any static server:
+1. Copy the example environment template:
+   ```bash
+   cp .env.example .env.local
+   ```
+2. Populate `.env.local` with your Supabase credentials:
+   ```ini
+   NEXT_PUBLIC_SUPABASE_URL="https://your-project-ref.supabase.co"
+   NEXT_PUBLIC_SUPABASE_ANON_KEY="your-anon-public-key"
+   SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
+   NEXT_PUBLIC_APP_NAME="Espresso Patronum"
+   NEXT_PUBLIC_CURRENCY_SYMBOL="₹"
+   ```
+3. **Secret Security**: `.gitignore` is pre-configured with `.env*` and `!.env.example` to ensure secret keys are never committed to version control.
 
-```bash
-# Using Python
-cd "potter-cafe-web"
-python -m http.server 5173
+---
 
-# Or using Node / npx
-npx serve -l 5173
+## 🗄️ Supabase Database Schema & Migration
+
+The complete SQL migration script is located at:
+📁 **[`supabase/schema.sql`](file:///d:/DESKTOP/Magical%20Cafe/potter-cafe-web/supabase/schema.sql)**
+
+### To apply the migration:
+1. Open your Supabase Dashboard -> **SQL Editor**.
+2. Click **New Query**, paste the contents of `supabase/schema.sql`, and click **Run**.
+3. This creates:
+   - `menu_items` table with initial seed data (12 Harry Potter items).
+   - `orders` table with JSONB items and status constraints.
+   - Row Level Security (RLS) policies allowing public ordering and staff updates.
+   - Realtime publication replication on `supabase_realtime`.
+
+---
+
+## 📁 Project Architecture & File Structure
+
 ```
-Then visit:
-👉 **[http://localhost:5173](http://localhost:5173)**
+potter-cafe-web/
+├── .env.example               # Environment variables template
+├── supabase/
+│   └── schema.sql             # Complete Supabase PostgreSQL schema with RLS & Realtime
+├── src/
+│   ├── app/
+│   │   ├── admin/
+│   │   │   └── page.tsx       # Staff / Admin Operations Deck
+│   │   ├── globals.css        # Dark apothecary design system & tokens
+│   │   ├── layout.tsx         # Root layout with fonts, OrderProvider & canvas
+│   │   └── page.tsx           # Client-facing Great Hall Storefront
+│   ├── components/
+│   │   ├── AssignCourierModal.tsx # Courier dispatch modal (Hedwig, Errol, Neville, Floo)
+│   │   ├── CartDrawer.tsx     # Slide-over cart, delivery info & UPI/COD payment
+│   │   ├── MagicCanvas.tsx    # Ambient golden stardust canvas
+│   │   ├── MenuCard.tsx       # Potion & brew card with stock handling
+│   │   ├── Navbar.tsx         # Responsive header with live order & role links
+│   │   ├── OrderTracker.tsx   # 5-step stepper with dynamic status alerts
+│   │   └── SoundEffects.ts    # Procedural Web Audio API sound synthesizer
+│   ├── context/
+│   │   └── OrderContext.tsx   # Global state & Supabase/BroadcastChannel sync engine
+│   ├── data/
+│   │   ├── couriers.ts        # Typed courier list & speeds
+│   │   └── menu.ts            # 12 typed signature potions, brews & bakes (INR ₹)
+│   ├── hooks/
+│   │   ├── useRealtimeMenu.ts   # Custom hook for Realtime menu_items changes
+│   │   └── useRealtimeOrders.ts # Custom hook for Realtime orders queue & tracking
+│   ├── lib/
+│   │   └── supabaseClient.ts  # Browser Supabase client & typed database helpers
+│   └── types/
+│       └── index.ts           # Core TypeScript & Supabase database types
+├── package.json
+└── tsconfig.json
+```
 
 ---
 
-## 🧙‍♂️ Testing Real-Time Multi-Tab Synchronization
-1. Open **[http://localhost:5173](http://localhost:5173)** in **Tab 1** (Client View).
-2. Open **[http://localhost:5173](http://localhost:5173)** in **Tab 2** and switch to the **Staff / Admin View**.
-3. Place an order in **Tab 1**; notice it appears immediately in the **Tab 2** queue.
-4. Accept the order or assign a courier (e.g. *Hedwig*) in **Tab 2**; watch the 5-step progress bar and status message in **Tab 1** update without refreshing!
+## 🚀 Getting Started
+
+### 1. Install Dependencies
+```bash
+npm install
+```
+
+### 2. Run the Development Server
+```bash
+npm run dev
+```
+
+Visit:
+- Customer Storefront: **[http://localhost:3000](http://localhost:3000)**
+- Staff / Admin Dashboard: **[http://localhost:3000/admin](http://localhost:3000/admin)**
+
+### 3. Production Build
+```bash
+npm run build
+npm run start
+```
