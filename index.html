@@ -1,0 +1,3766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Espresso Patronum | The Wizarding Cafe of Diagon Alley</title>
+  <meta name="description" content="Espresso Patronum: Purveyors of Fine Artisan Brews, Signature Potions, and Magical Bakes. Experience real-time wizarding dining and live cauldron brewing.">
+  <meta name="theme-color" content="#0d0b0e">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800;900&family=Cinzel+Decorative:wght@700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       1. CSS VARIABLES & DESIGN SYSTEM
+       ========================================================================== */
+    :root {
+      --bg-dark: #0a080c;
+      --bg-surface: #120e17;
+      --bg-card: #181320;
+      --bg-card-hover: #221a2d;
+      --bg-parchment-glass: rgba(28, 22, 36, 0.78);
+      --bg-drawer: #14101a;
+      
+      --accent-gold: #f59e0b;
+      --accent-gold-light: #fbbf24;
+      --accent-gold-dark: #b45309;
+      --gold-glow: rgba(245, 158, 11, 0.28);
+      --gold-border: rgba(245, 158, 11, 0.22);
+      --gold-border-bright: rgba(245, 158, 11, 0.55);
+
+      --potion-emerald: #10b981;
+      --potion-emerald-glow: rgba(16, 185, 129, 0.25);
+      --potion-emerald-border: rgba(16, 185, 129, 0.35);
+
+      --danger-crimson: #ef4444;
+      --danger-glow: rgba(239, 68, 68, 0.25);
+      --danger-border: rgba(239, 68, 68, 0.35);
+
+      --text-main: #f9f6ee;
+      --text-muted: #b3a9be;
+      --text-dim: #7d7289;
+      --text-gold: #fde68a;
+
+      --font-display: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
+      --font-serif: 'Cinzel', Georgia, serif;
+      --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+
+      --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.7), 0 0 1px 1px var(--gold-border);
+      --shadow-glow: 0 0 25px var(--gold-glow);
+      --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Reset & Base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(245, 158, 11, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.04) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(138, 43, 226, 0.03) 0%, transparent 60%);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Subtle Animated Dust Canvas */
+    #magical-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.55;
+    }
+
+    a, button {
+      cursor: pointer;
+      font-family: inherit;
+      color: inherit;
+      border: none;
+      background: none;
+      outline: none;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-dark);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(245, 158, 11, 0.25);
+      border-radius: var(--radius-full);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(245, 158, 11, 0.45);
+    }
+
+    /* ==========================================================================
+       2. TOP NAVIGATION BAR & INTERFACE SWITCHER
+       ========================================================================== */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(14, 10, 18, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--gold-border);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      text-decoration: none;
+    }
+
+    .brand-logo-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(16, 185, 129, 0.15));
+      border: 1px solid var(--gold-border-bright);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 0 15px var(--gold-glow);
+      flex-shrink: 0;
+      transition: var(--transition-smooth);
+    }
+    .brand-section:hover .brand-logo-icon {
+      transform: rotate(-6deg) scale(1.05);
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.5);
+    }
+
+    .brand-text h1 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      letter-spacing: 0.08em;
+      background: linear-gradient(to right, #fde68a, #f59e0b, #d97706);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+      line-height: 1.1;
+    }
+    .brand-text span {
+      font-family: var(--font-serif);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      display: block;
+    }
+
+    /* Switcher Pill Tabs */
+    .view-switcher {
+      display: flex;
+      background: rgba(24, 19, 32, 0.95);
+      padding: 4px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--gold-border);
+      position: relative;
+    }
+
+    .view-tab-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 1.15rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: var(--transition-smooth);
+      position: relative;
+    }
+    .view-tab-btn:hover {
+      color: var(--text-main);
+    }
+    .view-tab-btn.active {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(217, 119, 6, 0.35));
+      color: var(--text-gold);
+      border: 1px solid var(--gold-border-bright);
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+    }
+    .view-tab-btn .badge-pill {
+      background: var(--accent-gold);
+      color: #000;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      min-width: 18px;
+      text-align: center;
+      animation: pulseGlow 2s infinite;
+    }
+
+    /* Nav Actions Right */
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .sound-toggle-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid var(--gold-border);
+      background: var(--bg-card);
+      display: grid;
+      place-items: center;
+      color: var(--text-muted);
+      transition: var(--transition-smooth);
+    }
+    .sound-toggle-btn:hover {
+      color: var(--accent-gold);
+      border-color: var(--gold-border-bright);
+      transform: scale(1.05);
+    }
+
+    .active-tracker-btn {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 0.9rem;
+      border-radius: var(--radius-full);
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--potion-emerald-border);
+      color: #34d399;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: var(--transition-smooth);
+      animation: pulseEmerald 2.5s infinite;
+    }
+    .active-tracker-btn:hover {
+      background: rgba(16, 185, 129, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .cart-nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #0b0704;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 0.5rem 1.1rem;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(254, 240, 138, 0.6);
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);
+      transition: var(--transition-smooth);
+      position: relative;
+    }
+    .cart-nav-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(245, 158, 11, 0.5);
+    }
+    .cart-nav-btn .cart-count {
+      background: #000;
+      color: var(--accent-gold);
+      font-size: 0.75rem;
+      padding: 1px 7px;
+      border-radius: var(--radius-full);
+      font-weight: 800;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    /* Floating Cart for Mobile / Quick Access */
+    .floating-cart-btn {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 90;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #000;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 8px 30px rgba(245, 158, 11, 0.45);
+      border: 2px solid rgba(254, 240, 138, 0.7);
+      transition: var(--transition-smooth);
+      display: none;
+    }
+    .floating-cart-btn:hover {
+      transform: scale(1.08) rotate(5deg);
+    }
+    .floating-cart-btn .badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: #000;
+      color: #fbbf24;
+      border: 1px solid #fbbf24;
+      font-size: 0.75rem;
+      font-weight: 800;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+    }
+
+    /* ==========================================================================
+       3. CLIENT VIEW: HERO & MENU BOARD
+       ========================================================================== */
+    .app-main {
+      position: relative;
+      z-index: 10;
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 1.75rem 1.25rem 5rem;
+    }
+
+    .client-view, .admin-view {
+      display: none;
+      animation: fadeIn 0.35s ease;
+    }
+    .client-view.active, .admin-view.active {
+      display: block;
+    }
+
+    /* Hero Banner */
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(30, 24, 40, 0.8), rgba(20, 15, 26, 0.95));
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem 2rem;
+      margin-bottom: 2.25rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-shadow: var(--shadow-card);
+    }
+    .hero-banner::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+    }
+    .hero-crest {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 0.85rem;
+      filter: drop-shadow(0 0 16px rgba(245, 158, 11, 0.45));
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 2.75rem);
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #ffffff 20%, #fde68a 60%, #f59e0b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.15;
+    }
+    .hero-subtitle {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 640px;
+      margin-bottom: 1.25rem;
+    }
+    .hero-pills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+    .hero-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.22);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.85rem;
+      font-size: 0.78rem;
+      color: var(--text-gold);
+    }
+
+    /* Menu Board Header & Filters */
+    .menu-header {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      margin-bottom: 1.75rem;
+    }
+    @media (min-width: 768px) {
+      .menu-header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+    .section-title::before {
+      content: "";
+      width: 4px;
+      height: 24px;
+      background: var(--accent-gold);
+      border-radius: 2px;
+      box-shadow: 0 0 10px var(--accent-gold);
+    }
+
+    .category-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .category-filter-btn {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-card);
+      border: 1px solid var(--gold-border);
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: var(--transition-smooth);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .category-filter-btn:hover {
+      border-color: var(--gold-border-bright);
+      color: var(--text-main);
+      transform: translateY(-1px);
+    }
+    .category-filter-btn.active {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(180, 83, 9, 0.25));
+      border-color: var(--accent-gold);
+      color: var(--text-gold);
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+    }
+
+    /* Menu Grid */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Menu Item Card */
+    .menu-card {
+      background: var(--bg-parchment-glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition-smooth);
+      position: relative;
+      box-shadow: var(--shadow-card);
+    }
+    .menu-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--gold-border-bright);
+      box-shadow: 0 14px 35px -8px rgba(0, 0, 0, 0.8), 0 0 20px var(--gold-glow);
+    }
+    .menu-card.sold-out {
+      opacity: 0.72;
+      filter: grayscale(0.2);
+    }
+    .menu-card.sold-out:hover {
+      transform: none;
+      box-shadow: var(--shadow-card);
+    }
+
+    .card-banner {
+      height: 160px;
+      background: linear-gradient(135deg, rgba(35, 27, 46, 0.9), rgba(18, 14, 24, 0.95));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      border-bottom: 1px solid rgba(245, 158, 11, 0.1);
+      overflow: hidden;
+    }
+    .card-banner::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(245, 158, 11, 0.12), transparent 70%);
+      pointer-events: none;
+    }
+    .card-illustration {
+      width: 90px;
+      height: 90px;
+      filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.6));
+      transition: transform 0.4s ease;
+    }
+    .menu-card:hover .card-illustration {
+      transform: scale(1.1) rotate(2deg);
+    }
+
+    .card-stock-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .stock-badge-in {
+      background: rgba(16, 185, 129, 0.18);
+      border: 1px solid var(--potion-emerald-border);
+      color: #34d399;
+    }
+    .stock-badge-in::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+    }
+    .stock-badge-out {
+      background: rgba(239, 68, 68, 0.18);
+      border: 1px solid var(--danger-border);
+      color: #f87171;
+    }
+    .stock-badge-out::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ef4444;
+      box-shadow: 0 0 8px #ef4444;
+    }
+
+    .card-category-tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(14, 10, 18, 0.7);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      border-radius: var(--radius-full);
+      padding: 0.2rem 0.6rem;
+      font-size: 0.68rem;
+      color: var(--text-gold);
+      font-family: var(--font-serif);
+    }
+
+    .card-content {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .card-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-bottom: 0.4rem;
+    }
+    .card-title {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.25;
+    }
+    .card-price {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-gold);
+      white-space: nowrap;
+    }
+
+    .card-desc {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      line-height: 1.45;
+      margin-bottom: 1rem;
+      flex-grow: 1;
+    }
+
+    .card-magical-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(245, 158, 11, 0.05);
+      border-left: 2px solid var(--accent-gold);
+      padding: 0.4rem 0.65rem;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 0.74rem;
+      color: var(--text-gold);
+      margin-bottom: 1.15rem;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-top: auto;
+    }
+
+    .add-to-cart-btn {
+      width: 100%;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.3));
+      border: 1px solid var(--gold-border-bright);
+      color: var(--text-gold);
+      padding: 0.65rem 1rem;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: var(--transition-smooth);
+    }
+    .add-to-cart-btn:hover:not(:disabled) {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #0a080c;
+      box-shadow: 0 0 20px var(--gold-glow);
+      transform: translateY(-1px);
+    }
+    .add-to-cart-btn:disabled {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.1);
+      color: var(--text-dim);
+      cursor: not-allowed;
+    }
+
+    /* ==========================================================================
+       4. CART & CHECKOUT SLIDE-OVER DRAWER
+       ========================================================================== */
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 3, 6, 0.75);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .drawer-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .cart-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      max-width: 480px;
+      background: var(--bg-drawer);
+      border-left: 1px solid var(--gold-border);
+      box-shadow: -10px 0 40px rgba(0, 0, 0, 0.8);
+      z-index: 210;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .cart-drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      padding: 1.25rem 1.5rem;
+      background: rgba(20, 15, 26, 0.95);
+      border-bottom: 1px solid var(--gold-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .drawer-title {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .drawer-close-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--gold-border);
+      display: grid;
+      place-items: center;
+      color: var(--text-muted);
+      transition: var(--transition-smooth);
+    }
+    .drawer-close-btn:hover {
+      color: var(--accent-gold);
+      border-color: var(--gold-border-bright);
+      transform: rotate(90deg);
+    }
+
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Cart Items Section */
+    .cart-items-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .empty-cart-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-dim);
+    }
+    .empty-cart-state svg {
+      width: 68px;
+      height: 68px;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+    .empty-cart-state p {
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+
+    .cart-item-row {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      background: rgba(25, 20, 33, 0.7);
+      border: 1px solid rgba(245, 158, 11, 0.15);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem;
+      transition: var(--transition-smooth);
+    }
+    .cart-item-row:hover {
+      border-color: var(--gold-border);
+    }
+    .cart-item-thumb {
+      width: 48px;
+      height: 48px;
+      background: rgba(35, 28, 48, 0.8);
+      border-radius: var(--radius-sm);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      border: 1px solid rgba(245, 158, 11, 0.15);
+    }
+    .cart-item-thumb svg {
+      width: 32px;
+      height: 32px;
+    }
+    .cart-item-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .cart-item-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .cart-item-unit-price {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .cart-item-stepper {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(14, 10, 18, 0.8);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-full);
+      padding: 2px 4px;
+    }
+    .stepper-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: var(--text-gold);
+      font-weight: 800;
+      font-size: 0.85rem;
+      transition: var(--transition-smooth);
+    }
+    .stepper-btn:hover {
+      background: rgba(245, 158, 11, 0.25);
+    }
+    .stepper-qty {
+      font-size: 0.82rem;
+      font-weight: 700;
+      min-width: 18px;
+      text-align: center;
+    }
+    .cart-item-total {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text-gold);
+      min-width: 55px;
+      text-align: right;
+    }
+
+    /* Delivery Details Form */
+    .form-section-title {
+      font-family: var(--font-serif);
+      font-size: 0.95rem;
+      color: var(--text-gold);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      margin-bottom: 0.75rem;
+    }
+    .form-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .form-input {
+      background: rgba(14, 10, 18, 0.85);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 0.85rem;
+      color: var(--text-main);
+      font-size: 0.88rem;
+      font-family: inherit;
+      transition: var(--transition-smooth);
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 12px var(--gold-glow);
+    }
+
+    /* Payment Option Switcher */
+    .payment-options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+      margin-bottom: 0.85rem;
+    }
+    .payment-option-card {
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 0.5rem;
+      text-align: center;
+      background: rgba(22, 17, 29, 0.8);
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+    .payment-option-card:hover {
+      border-color: var(--gold-border-bright);
+    }
+    .payment-option-card.selected {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(180, 83, 9, 0.15));
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+    }
+    .payment-option-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .payment-option-subtitle {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Mock UPI Box */
+    .upi-box {
+      background: rgba(18, 13, 24, 0.95);
+      border: 1px dashed var(--gold-border-bright);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      text-align: center;
+      margin-bottom: 0.75rem;
+      display: none;
+    }
+    .upi-box.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    .mock-qr-code {
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 0.75rem;
+      background: #ffffff;
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+    .mock-qr-code svg {
+      width: 100%;
+      height: 100%;
+    }
+    .upi-id-pill {
+      display: inline-block;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid var(--gold-border);
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-family: monospace;
+      color: var(--text-gold);
+      margin-top: 0.4rem;
+    }
+
+    /* Bill Summary & Sticky Checkout Footer */
+    .drawer-footer {
+      padding: 1.25rem 1.5rem;
+      background: rgba(18, 13, 24, 0.98);
+      border-top: 1px solid var(--gold-border);
+    }
+    .bill-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+    .bill-row.total-row {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-gold);
+      border-top: 1px dashed var(--gold-border);
+      padding-top: 0.65rem;
+      margin-top: 0.65rem;
+      margin-bottom: 1rem;
+    }
+
+    .checkout-submit-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #000;
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      font-weight: 800;
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid #fde68a;
+      box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      transition: var(--transition-smooth);
+    }
+    .checkout-submit-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(245, 158, 11, 0.6);
+      filter: brightness(1.08);
+    }
+    .checkout-submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      filter: grayscale(0.5);
+    }
+
+    /* ==========================================================================
+       5. LIVE ORDER TRACKING MODAL (5-STEP PROGRESS)
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 3, 6, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 300;
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .tracker-modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--gold-border-bright);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 640px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 30px var(--gold-glow);
+      position: relative;
+      animation: modalSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-header {
+      padding: 1.5rem 1.75rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--gold-border);
+    }
+    .tracker-header-info h2 {
+      font-family: var(--font-serif);
+      font-size: 1.35rem;
+      color: var(--text-gold);
+    }
+    .tracker-header-info p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .modal-body {
+      padding: 1.5rem 1.75rem;
+    }
+
+    /* 5-Step Progress Bar Component */
+    .stepper-container {
+      margin: 1.5rem 0 2rem;
+      position: relative;
+    }
+    .stepper-track-bg {
+      position: absolute;
+      top: 20px;
+      left: 30px;
+      right: 30px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      z-index: 1;
+      border-radius: 2px;
+    }
+    .stepper-track-fill {
+      position: absolute;
+      top: 20px;
+      left: 30px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--potion-emerald), var(--accent-gold));
+      z-index: 2;
+      border-radius: 2px;
+      transition: width 0.5s ease;
+      box-shadow: 0 0 10px var(--accent-gold);
+    }
+    .stepper-nodes {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      z-index: 3;
+    }
+    .step-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      width: 70px;
+    }
+    .step-icon-circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--bg-dark);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      display: grid;
+      place-items: center;
+      color: var(--text-dim);
+      transition: var(--transition-smooth);
+      margin-bottom: 0.5rem;
+    }
+    .step-node.completed .step-icon-circle {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: var(--potion-emerald);
+      color: #34d399;
+      box-shadow: 0 0 15px var(--potion-emerald-glow);
+    }
+    .step-node.active .step-icon-circle {
+      background: rgba(245, 158, 11, 0.25);
+      border-color: var(--accent-gold);
+      color: var(--text-gold);
+      box-shadow: 0 0 20px var(--gold-glow);
+      animation: pulseGlow 2s infinite;
+      transform: scale(1.1);
+    }
+    .step-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      line-height: 1.2;
+    }
+    .step-node.completed .step-label {
+      color: #a7f3d0;
+    }
+    .step-node.active .step-label {
+      color: var(--text-gold);
+      font-weight: 700;
+    }
+
+    /* Live Dynamic Status Card */
+    .live-status-card {
+      background: linear-gradient(135deg, rgba(30, 23, 40, 0.95), rgba(20, 15, 26, 0.95));
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .live-status-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--accent-gold);
+      box-shadow: 0 0 10px var(--accent-gold);
+    }
+    .status-badge-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--text-gold);
+      border: 1px solid var(--gold-border);
+      margin-bottom: 0.5rem;
+    }
+    .status-msg-headline {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      color: var(--text-main);
+      margin-bottom: 0.35rem;
+    }
+    .status-msg-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* Courier Dispatch Card (when active or out for delivery) */
+    .courier-dispatch-card {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid var(--potion-emerald-border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .courier-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid var(--potion-emerald);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .courier-avatar svg {
+      width: 30px;
+      height: 30px;
+      color: #34d399;
+    }
+    .courier-info h4 {
+      font-family: var(--font-serif);
+      font-size: 0.95rem;
+      color: #34d399;
+    }
+    .courier-info p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* Modal Order Summary Accordion */
+    .modal-items-summary {
+      background: rgba(14, 10, 18, 0.7);
+      border: 1px solid rgba(245, 158, 11, 0.15);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+    }
+    .summary-heading {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.6rem;
+      font-weight: 700;
+    }
+    .modal-item-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      padding: 0.3rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .modal-item-line:last-child {
+      border-bottom: none;
+    }
+
+    /* ==========================================================================
+       6. STAFF / ADMIN VIEW: LIVE OPERATIONS DASHBOARD
+       ========================================================================== */
+    .admin-header-deck {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    @media (min-width: 768px) {
+      .admin-header-deck {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+    .admin-title-group h2 {
+      font-family: var(--font-serif);
+      font-size: 1.8rem;
+      color: var(--text-gold);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+    .admin-title-group p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .admin-quick-actions {
+      display: flex;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+    }
+    .admin-btn {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-weight: 600;
+      border: 1px solid var(--gold-border);
+      background: var(--bg-card);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      transition: var(--transition-smooth);
+    }
+    .admin-btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--gold-border-bright);
+      transform: translateY(-1px);
+    }
+    .admin-btn.primary {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(180, 83, 9, 0.3));
+      border-color: var(--accent-gold);
+      color: var(--text-gold);
+    }
+
+    /* Live Operations Metrics Bar */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.25rem;
+    }
+    .metric-card {
+      background: var(--bg-parchment-glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .metric-card::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+    }
+    .metric-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    .metric-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .metric-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      display: grid;
+      place-items: center;
+      color: var(--accent-gold);
+    }
+    .metric-value {
+      font-family: var(--font-serif);
+      font-size: 1.9rem;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.1;
+      margin-bottom: 0.25rem;
+    }
+    .metric-sub {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+
+    /* Live Orders Section */
+    .admin-tabs-nav {
+      display: flex;
+      border-bottom: 1px solid var(--gold-border);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .admin-tab-link {
+      padding: 0.65rem 0.5rem;
+      font-family: var(--font-serif);
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      transition: var(--transition-smooth);
+    }
+    .admin-tab-link:hover {
+      color: var(--text-main);
+    }
+    .admin-tab-link.active {
+      color: var(--text-gold);
+      border-bottom-color: var(--accent-gold);
+    }
+
+    .orders-queue-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    /* Admin Order Card */
+    .order-card {
+      background: var(--bg-card);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      transition: var(--transition-smooth);
+    }
+    .order-card:hover {
+      border-color: var(--gold-border-bright);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.7), 0 0 15px var(--gold-glow);
+    }
+
+    .order-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .order-id-badge {
+      font-family: monospace;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-gold);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .order-time-stamp {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+    }
+
+    .order-customer-box {
+      margin-bottom: 0.75rem;
+    }
+    .customer-name {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .customer-details {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+      line-height: 1.35;
+    }
+
+    .order-items-list {
+      background: rgba(12, 9, 16, 0.8);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem;
+      margin-bottom: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .order-item-entry {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      color: var(--text-main);
+    }
+    .order-item-qty {
+      font-weight: 700;
+      color: var(--text-gold);
+      margin-right: 0.35rem;
+    }
+
+    .order-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.82rem;
+    }
+    .payment-tag {
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .payment-tag.upi {
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      color: #93c5fd;
+    }
+    .payment-tag.cod {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid var(--gold-border);
+      color: var(--text-gold);
+    }
+    .order-grand-total {
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-gold);
+    }
+
+    /* Admin Action Controls */
+    .order-actions-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: auto;
+    }
+    .admin-action-btn {
+      flex: 1;
+      min-width: 130px;
+      padding: 0.55rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-accept {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.35));
+      border: 1px solid var(--potion-emerald-border);
+      color: #34d399;
+    }
+    .btn-accept:hover {
+      background: rgba(16, 185, 129, 0.4);
+      box-shadow: 0 0 15px var(--potion-emerald-glow);
+    }
+
+    .btn-brew {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(217, 119, 6, 0.35));
+      border: 1px solid var(--gold-border);
+      color: var(--text-gold);
+    }
+    .btn-brew:hover {
+      background: rgba(245, 158, 11, 0.4);
+      box-shadow: 0 0 15px var(--gold-glow);
+    }
+
+    .btn-dispatch {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(124, 58, 237, 0.35));
+      border: 1px solid rgba(139, 92, 246, 0.4);
+      color: #c4b5fd;
+    }
+    .btn-dispatch:hover {
+      background: rgba(139, 92, 246, 0.4);
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+    }
+
+    .btn-complete {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.45));
+      border: 1px solid #10b981;
+      color: #ffffff;
+    }
+    .btn-complete:hover {
+      box-shadow: 0 0 18px var(--potion-emerald-glow);
+    }
+
+    /* Inventory Manager Table */
+    .inventory-manager-section {
+      background: var(--bg-card);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      margin-top: 2rem;
+      box-shadow: var(--shadow-card);
+    }
+    .inventory-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+    .inventory-header h3 {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      color: var(--text-gold);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .inventory-table-wrapper {
+      overflow-x: auto;
+    }
+    .inventory-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    .inventory-table th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--gold-border);
+    }
+    .inventory-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.88rem;
+    }
+    .inventory-table tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Toggle Switch */
+    .switch-label {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 26px;
+    }
+    .switch-label input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .switch-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(239, 68, 68, 0.25);
+      border: 1px solid var(--danger-border);
+      transition: .3s;
+      border-radius: var(--radius-full);
+    }
+    .switch-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #f87171;
+      transition: .3s;
+      border-radius: 50%;
+    }
+    input:checked + .switch-slider {
+      background-color: rgba(16, 185, 129, 0.25);
+      border-color: var(--potion-emerald-border);
+    }
+    input:checked + .switch-slider:before {
+      transform: translateX(22px);
+      background-color: #34d399;
+      box-shadow: 0 0 10px #10b981;
+    }
+
+    /* Dispatch Courier Selector Modal */
+    .courier-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 3, 6, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 350;
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .courier-modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .courier-modal {
+      background: var(--bg-card);
+      border: 1px solid var(--gold-border-bright);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 480px;
+      padding: 1.5rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.9), 0 0 25px var(--gold-glow);
+    }
+    .courier-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin: 1.25rem 0;
+    }
+    .courier-option-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-md);
+      background: rgba(22, 17, 28, 0.9);
+      border: 1px solid var(--gold-border);
+      transition: var(--transition-smooth);
+      text-align: left;
+    }
+    .courier-option-btn:hover {
+      border-color: var(--accent-gold);
+      background: rgba(245, 158, 11, 0.15);
+      transform: translateY(-2px);
+    }
+
+    /* ==========================================================================
+       7. TOAST NOTIFICATION SYSTEM
+       ========================================================================== */
+    .toast-container {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 1.5rem;
+      z-index: 400;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      pointer-events: none;
+    }
+    .magic-toast {
+      background: rgba(20, 15, 27, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--gold-border-bright);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.15rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), 0 0 20px var(--gold-glow);
+      color: var(--text-main);
+      font-size: 0.85rem;
+      pointer-events: auto;
+      animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      max-width: 360px;
+    }
+    .toast-icon {
+      color: var(--accent-gold);
+      flex-shrink: 0;
+    }
+
+    /* Keyframe Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes modalSlideUp {
+      from { opacity: 0; transform: translateY(20px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 10px var(--gold-glow); }
+      50% { box-shadow: 0 0 25px rgba(245, 158, 11, 0.5); }
+    }
+    @keyframes pulseEmerald {
+      0%, 100% { box-shadow: 0 0 8px var(--potion-emerald-glow); }
+      50% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.45); }
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 640px) {
+      .top-nav {
+        padding: 0.65rem 0.85rem;
+      }
+      .brand-text h1 {
+        font-size: 0.95rem;
+      }
+      .brand-text span {
+        display: none;
+      }
+      .view-tab-btn {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.75rem;
+      }
+      .floating-cart-btn {
+        display: grid;
+      }
+      .cart-nav-btn {
+        display: none;
+      }
+      .menu-grid {
+        grid-template-columns: 1fr;
+      }
+      .metrics-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Magical Canvas Particles -->
+  <canvas id="magical-canvas"></canvas>
+
+  <!-- ==========================================================================
+       TOP NAVIGATION BAR
+       ========================================================================== -->
+  <header class="top-nav">
+    <div class="brand-section">
+      <div class="brand-logo-icon">
+        <!-- Golden Cauldron & Steam SVG -->
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 11h16a1 1 0 0 1 1 1c0 5-4 9-9 9s-9-4-9-9a1 1 0 0 1 1-1z"></path>
+          <path d="M6 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2"></path>
+          <path d="M12 2v2"></path>
+          <path d="M9 3c.5.5.5 1 0 1.5"></path>
+          <path d="M15 3c-.5.5-.5 1 0 1.5"></path>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>Espresso Patronum</h1>
+        <span>Purveyors of Magical Brews • Diagon Alley</span>
+      </div>
+    </div>
+
+    <!-- Interface Switcher Tabs -->
+    <div class="view-switcher" role="tablist">
+      <button class="view-tab-btn active" id="tab-client" onclick="APP.switchView('client')" role="tab" aria-selected="true">
+        <!-- Wand Icon -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="m15 4 5 2-5 2-2 5-2-5-5-2 5-2 2-5Z"></path>
+          <path d="m9 15-7 7"></path>
+        </svg>
+        <span>Client View</span>
+      </button>
+
+      <button class="view-tab-btn" id="tab-admin" onclick="APP.switchView('admin')" role="tab" aria-selected="false">
+        <!-- Quill / Dashboard Icon -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+          <path d="M3 9h18"></path>
+          <path d="M9 21V9"></path>
+        </svg>
+        <span>Staff / Admin</span>
+        <span class="badge-pill" id="admin-pending-count">0</span>
+      </button>
+    </div>
+
+    <!-- Nav Actions -->
+    <div class="nav-actions">
+      <!-- Quick Active Order Tracker Pill -->
+      <button class="active-tracker-btn" id="nav-active-tracker-btn" onclick="APP.openTrackerModal(APP.state.activeTrackingOrderId)" title="Track Your Magical Order">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>Live Order #<span id="nav-active-order-id">--</span></span>
+      </button>
+
+      <!-- Audio Toggle -->
+      <button class="sound-toggle-btn" id="sound-toggle-btn" onclick="APP.toggleSound()" title="Toggle Magical Chimes">
+        <svg id="sound-icon-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+        </svg>
+      </button>
+
+      <!-- Cart Button in Nav -->
+      <button class="cart-nav-btn" onclick="APP.openCart()" aria-label="Open Cauldron Cart">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <circle cx="8" cy="21" r="1"></circle>
+          <circle cx="19" cy="21" r="1"></circle>
+          <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
+        </svg>
+        <span>Cauldron</span>
+        <span class="cart-count" id="nav-cart-count">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Floating Mobile Cart Button -->
+  <button class="floating-cart-btn" onclick="APP.openCart()" aria-label="Floating Cart Button">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <circle cx="8" cy="21" r="1"></circle>
+      <circle cx="19" cy="21" r="1"></circle>
+      <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
+    </svg>
+    <span class="badge" id="floating-cart-count">0</span>
+  </button>
+
+  <!-- ==========================================================================
+       MAIN APP CONTAINER
+       ========================================================================== -->
+  <main class="app-main">
+
+    <!-- ----------------------------------------------------------------------
+         CLIENT VIEW: CUSTOMER MENU & ORDERING
+         ---------------------------------------------------------------------- -->
+    <section class="client-view active" id="view-client">
+      
+      <!-- Wizarding Hero Header -->
+      <div class="hero-banner">
+        <!-- Golden Snitch / Emblem SVG -->
+        <svg class="hero-crest" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.6">
+          <circle cx="12" cy="12" r="4" fill="rgba(245, 158, 11, 0.2)"></circle>
+          <path d="M4 12c3-4 6-4 8 0-2 4-5 4-8 0z"></path>
+          <path d="M20 12c-3-4-6-4-8 0 2 4 5 4 8 0z"></path>
+          <line x1="12" y1="2" x2="12" y2="4"></line>
+          <line x1="12" y1="20" x2="12" y2="22"></line>
+        </svg>
+
+        <h2 class="hero-title">Espresso Patronum</h2>
+        <p class="hero-subtitle">
+          "Expecto Caffeine!" Enchanted beans roasted over dragon flame, cold brews aged in oak barrels, and fresh pastries baked at the dawn of the Golden Snitch.
+        </p>
+
+        <div class="hero-pills">
+          <div class="hero-pill">
+            <span>✨</span> Daily Special: Felix Felicis Gold Elixir (100% Luck Boost)
+          </div>
+          <div class="hero-pill">
+            <span>🦉</span> Guaranteed Express Owl Post Delivery in 20 mins
+          </div>
+          <div class="hero-pill">
+            <span>⚡</span> UPI Spell-Pay & Galleon COD Accepted
+          </div>
+        </div>
+      </div>
+
+      <!-- Menu Board Header & Filter Pills -->
+      <div class="menu-header">
+        <h3 class="section-title">The Daily Menu Board</h3>
+
+        <div class="category-filters" role="group" aria-label="Category Filters">
+          <button class="category-filter-btn active" onclick="APP.filterCategory('all', this)">
+            <span>🌟</span> All Potions & Brews
+          </button>
+          <button class="category-filter-btn" onclick="APP.filterCategory('Signature Potions', this)">
+            <span>🧪</span> Signature Potions
+          </button>
+          <button class="category-filter-btn" onclick="APP.filterCategory('Artisan Brews', this)">
+            <span>☕</span> Artisan Brews
+          </button>
+          <button class="category-filter-btn" onclick="APP.filterCategory('Magical Bakes', this)">
+            <span>🥧</span> Magical Bakes
+          </button>
+        </div>
+      </div>
+
+      <!-- Menu Grid -->
+      <div class="menu-grid" id="menu-items-grid">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+
+    <!-- ----------------------------------------------------------------------
+         STAFF / ADMIN VIEW: LIVE OPERATIONS DASHBOARD
+         ---------------------------------------------------------------------- -->
+    <section class="admin-view" id="view-admin">
+      
+      <!-- Operations Header Deck -->
+      <div class="admin-header-deck">
+        <div class="admin-title-group">
+          <h2>
+            <span>📜</span> Live Operations Dashboard
+          </h2>
+          <p>The Ministry of Brews & Hearth Operations • Real-time order dispatch and cauldron management</p>
+        </div>
+
+        <div class="admin-quick-actions">
+          <button class="admin-btn primary" onclick="APP.generateMockOrder()" title="Simulate a new incoming owl order">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M5 12h14"></path>
+            </svg>
+            <span>Simulate Incoming Order</span>
+          </button>
+          <button class="admin-btn" onclick="APP.restockAllInventory()" title="Set all items to In Stock">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+              <path d="M3 3v5h5"></path>
+              <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path>
+              <path d="M16 21h5v-5"></path>
+            </svg>
+            <span>Restock All Menu</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Metrics Summary Bar -->
+      <div class="metrics-grid">
+        <!-- Metric 1: Revenue -->
+        <div class="metric-card">
+          <div class="metric-top">
+            <span class="metric-label">Total Revenue</span>
+            <div class="metric-icon">₹</div>
+          </div>
+          <div class="metric-value" id="metric-revenue">₹0</div>
+          <div class="metric-sub">Calculated from settled orders</div>
+        </div>
+
+        <!-- Metric 2: Pending Orders -->
+        <div class="metric-card">
+          <div class="metric-top">
+            <span class="metric-label">Pending Orders</span>
+            <div class="metric-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </div>
+          </div>
+          <div class="metric-value" id="metric-pending">0</div>
+          <div class="metric-sub">Awaiting Barista Acceptance</div>
+        </div>
+
+        <!-- Metric 3: Active Brews -->
+        <div class="metric-card">
+          <div class="metric-top">
+            <span class="metric-label">Active Brews</span>
+            <div class="metric-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2v2"></path>
+                <path d="M4 11h16a1 1 0 0 1 1 1c0 5-4 9-9 9s-9-4-9-9a1 1 0 0 1 1-1z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="metric-value" id="metric-brews">0</div>
+          <div class="metric-sub">Currently boiling in cauldrons</div>
+        </div>
+
+        <!-- Metric 4: Completed -->
+        <div class="metric-card">
+          <div class="metric-top">
+            <span class="metric-label">Delivered Orders</span>
+            <div class="metric-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
+          </div>
+          <div class="metric-value" id="metric-completed">0</div>
+          <div class="metric-sub">Owl deliveries accomplished</div>
+        </div>
+      </div>
+
+      <!-- Live Orders Queue -->
+      <div class="orders-section">
+        <div class="admin-tabs-nav">
+          <button class="admin-tab-link active" onclick="APP.filterAdminOrders('all', this)">
+            All Orders (<span id="admin-count-all">0</span>)
+          </button>
+          <button class="admin-tab-link" onclick="APP.filterAdminOrders('Placed', this)">
+            Placed (<span id="admin-count-placed">0</span>)
+          </button>
+          <button class="admin-tab-link" onclick="APP.filterAdminOrders('In Kitchen', this)">
+            Brewing (<span id="admin-count-brewing">0</span>)
+          </button>
+          <button class="admin-tab-link" onclick="APP.filterAdminOrders('Out for Delivery', this)">
+            Out for Delivery (<span id="admin-count-dispatched">0</span>)
+          </button>
+          <button class="admin-tab-link" onclick="APP.filterAdminOrders('Delivered', this)">
+            Delivered (<span id="admin-count-delivered">0</span>)
+          </button>
+        </div>
+
+        <!-- Orders Cards Container -->
+        <div class="orders-queue-grid" id="orders-queue-container">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+
+      <!-- Daily Inventory Manager Section -->
+      <div class="inventory-manager-section">
+        <div class="inventory-header">
+          <h3>
+            <span>🧙‍♂️</span> Daily Inventory & Potions Stock Manager
+          </h3>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">
+            Toggles instantly update customer ordering menu in real time
+          </span>
+        </div>
+
+        <div class="inventory-table-wrapper">
+          <table class="inventory-table">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Item Name</th>
+                <th>Price</th>
+                <th>Current Status</th>
+                <th style="text-align: right;">Stock Toggle</th>
+              </tr>
+            </thead>
+            <tbody id="inventory-table-body">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+
+  <!-- ==========================================================================
+       CART & CHECKOUT SLIDE-OVER DRAWER
+       ========================================================================== -->
+  <div class="drawer-backdrop" id="cart-drawer-backdrop" onclick="APP.closeCart()"></div>
+  <aside class="cart-drawer" id="cart-drawer">
+    
+    <div class="drawer-header">
+      <h3 class="drawer-title">
+        <!-- Cauldron Icon -->
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2">
+          <path d="M4 11h16a1 1 0 0 1 1 1c0 5-4 9-9 9s-9-4-9-9a1 1 0 0 1 1-1z"></path>
+          <path d="M6 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2"></path>
+        </svg>
+        <span>Your Enchanted Cauldron</span>
+      </h3>
+      <button class="drawer-close-btn" onclick="APP.closeCart()" aria-label="Close cart">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="drawer-body">
+      
+      <!-- Cart Items List -->
+      <div class="cart-items-container" id="cart-items-list">
+        <!-- Rendered via JS -->
+      </div>
+
+      <!-- Checkout Delivery Details Form -->
+      <div id="checkout-form-wrapper">
+        <div class="form-section-title">
+          <span>Owl Delivery Post Details</span>
+          <span style="font-size: 0.72rem; color: var(--accent-gold); font-weight: normal;">(Editable)</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="cust-name">Full Name (Wizard / Witch)</label>
+          <input type="text" id="cust-name" class="form-input" placeholder="e.g., Hermione Granger" value="Hermione Granger">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="cust-phone">Floo Phone / Owl Contact</label>
+          <input type="tel" id="cust-phone" class="form-input" placeholder="+91 98765 43210" value="+91 98765 43210">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="cust-address">Delivery Address / Dormitory</label>
+          <input type="text" id="cust-address" class="form-input" placeholder="e.g., Gryffindor Tower, 7th Floor, Hogwarts" value="Gryffindor Tower, 7th Floor, Hogwarts">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="cust-notes">Owl Instructions (Optional)</label>
+          <input type="text" id="cust-notes" class="form-input" placeholder="e.g., Tap the window twice. Beware of Crookshanks." value="Tap the window twice with your beak.">
+        </div>
+
+        <!-- Payment Selection -->
+        <div class="form-section-title" style="margin-top: 1.25rem;">
+          <span>Payment Selection</span>
+        </div>
+
+        <div class="payment-options-grid">
+          <div class="payment-option-card selected" id="pay-opt-upi" onclick="APP.selectPayment('UPI')">
+            <div class="payment-option-title">⚡ Instant UPI</div>
+            <div class="payment-option-subtitle">GPay / PhonePe / QR</div>
+          </div>
+          <div class="payment-option-card" id="pay-opt-cod" onclick="APP.selectPayment('COD')">
+            <div class="payment-option-title">🪙 Owl COD</div>
+            <div class="payment-option-subtitle">Cash / Galleons on Arrival</div>
+          </div>
+        </div>
+
+        <!-- Mock UPI QR View -->
+        <div class="upi-box active" id="upi-box">
+          <p style="font-size: 0.8rem; color: var(--text-gold); margin-bottom: 0.5rem; font-weight: 600;">
+            Scan & Pay with Any UPI Spell-App
+          </p>
+          <div class="mock-qr-code">
+            <!-- Detailed Mock QR Code SVG -->
+            <svg viewBox="0 0 100 100" fill="#000000">
+              <rect width="100" height="100" fill="#ffffff"/>
+              <!-- Position markers -->
+              <rect x="5" y="5" width="28" height="28" fill="#000"/>
+              <rect x="9" y="9" width="20" height="20" fill="#fff"/>
+              <rect x="13" y="13" width="12" height="12" fill="#000"/>
+              
+              <rect x="67" y="5" width="28" height="28" fill="#000"/>
+              <rect x="71" y="9" width="20" height="20" fill="#fff"/>
+              <rect x="75" y="13" width="12" height="12" fill="#000"/>
+
+              <rect x="5" y="67" width="28" height="28" fill="#000"/>
+              <rect x="9" y="71" width="20" height="20" fill="#fff"/>
+              <rect x="13" y="75" width="12" height="12" fill="#000"/>
+
+              <!-- Central coffee & wand insignia -->
+              <circle cx="50" cy="50" r="10" fill="#f59e0b"/>
+              <circle cx="50" cy="50" r="6" fill="#000"/>
+
+              <!-- Data bits -->
+              <rect x="38" y="10" width="5" height="15" fill="#000"/>
+              <rect x="48" y="14" width="8" height="6" fill="#000"/>
+              <rect x="38" y="32" width="6" height="6" fill="#000"/>
+              <rect x="48" y="28" width="8" height="8" fill="#000"/>
+              <rect x="60" y="38" width="6" height="8" fill="#000"/>
+              <rect x="10" y="38" width="12" height="6" fill="#000"/>
+              <rect x="25" y="42" width="8" height="8" fill="#000"/>
+              <rect x="70" y="42" width="16" height="6" fill="#000"/>
+              <rect x="38" y="68" width="12" height="6" fill="#000"/>
+              <rect x="56" y="68" width="8" height="12" fill="#000"/>
+              <rect x="70" y="68" width="8" height="8" fill="#000"/>
+              <rect x="42" y="80" width="16" height="8" fill="#000"/>
+              <rect x="68" y="82" width="16" height="6" fill="#000"/>
+            </svg>
+          </div>
+          <div class="upi-id-pill">espresso.patronum@magicbank</div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Bill Summary & CTA Footer -->
+    <div class="drawer-footer">
+      <div class="bill-row">
+        <span>Brews Subtotal</span>
+        <span id="bill-subtotal">₹0</span>
+      </div>
+      <div class="bill-row">
+        <span>Ministry Tax (5% GST)</span>
+        <span id="bill-tax">₹0</span>
+      </div>
+      <div class="bill-row">
+        <span>Express Owl Post Fee</span>
+        <span id="bill-delivery">₹40</span>
+      </div>
+      <div class="bill-row total-row">
+        <span>Grand Total</span>
+        <span id="bill-total">₹0</span>
+      </div>
+
+      <button class="checkout-submit-btn" id="submit-order-btn" onclick="APP.submitOrder()">
+        <span>Cast Order Spell</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+    </div>
+
+  </aside>
+
+
+  <!-- ==========================================================================
+       LIVE ORDER TRACKING MODAL (5-STEP PROGRESS)
+       ========================================================================== -->
+  <div class="modal-backdrop" id="tracker-modal-backdrop" onclick="APP.closeTrackerModal(event)">
+    <div class="tracker-modal-card" id="tracker-modal-card">
+      
+      <div class="modal-header">
+        <div class="tracker-header-info">
+          <h2>Magical Order Tracking</h2>
+          <p>Order <span id="track-order-id" style="font-family: monospace; color: var(--text-gold); font-weight: 700;">#EP-XXXX</span> • Placed at <span id="track-order-time">--</span></p>
+        </div>
+        <button class="drawer-close-btn" onclick="APP.closeTrackerModalDirect()" aria-label="Close tracking modal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        
+        <!-- 5-Step Interactive Visual Progress Tracker -->
+        <div class="stepper-container">
+          <div class="stepper-track-bg"></div>
+          <div class="stepper-track-fill" id="track-progress-fill" style="width: 0%;"></div>
+
+          <div class="stepper-nodes">
+            <!-- Step 1: Placed -->
+            <div class="step-node" id="step-node-1">
+              <div class="step-icon-circle">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+              </div>
+              <span class="step-label">Placed</span>
+            </div>
+
+            <!-- Step 2: Accepted -->
+            <div class="step-node" id="step-node-2">
+              <div class="step-icon-circle">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+              </div>
+              <span class="step-label">Accepted</span>
+            </div>
+
+            <!-- Step 3: Brewing -->
+            <div class="step-node" id="step-node-3">
+              <div class="step-icon-circle">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 11h16a1 1 0 0 1 1 1c0 5-4 9-9 9s-9-4-9-9a1 1 0 0 1 1-1z"></path>
+                  <path d="M12 2v2"></path>
+                  <path d="M9 3c.5.5.5 1 0 1.5"></path>
+                </svg>
+              </div>
+              <span class="step-label">Brewing</span>
+            </div>
+
+            <!-- Step 4: Out for Delivery -->
+            <div class="step-node" id="step-node-4">
+              <div class="step-icon-circle">
+                <!-- Owl Icon -->
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2a8 8 0 0 0-8 8v12h16V10a8 8 0 0 0-8-8z"></path>
+                  <circle cx="9" cy="10" r="2"></circle>
+                  <circle cx="15" cy="10" r="2"></circle>
+                  <path d="m12 13-1 2h2l-1-2z"></path>
+                </svg>
+              </div>
+              <span class="step-label">Dispatched</span>
+            </div>
+
+            <!-- Step 5: Delivered -->
+            <div class="step-node" id="step-node-5">
+              <div class="step-icon-circle">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+              </div>
+              <span class="step-label">Delivered</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Status Card -->
+        <div class="live-status-card">
+          <div class="status-badge-inline" id="track-status-badge">
+            <span>⚡ Status:</span>
+            <span id="track-status-text">Order Placed</span>
+          </div>
+          <h3 class="status-msg-headline" id="track-headline">Your order is logged in the Great Hall</h3>
+          <p class="status-msg-sub" id="track-subtext">
+            Our Head Barista has received your parchment ticket. Stand by for cauldron acceptance!
+          </p>
+        </div>
+
+        <!-- Courier Info Card (Conditionally shown if assigned or out for delivery) -->
+        <div class="courier-dispatch-card" id="track-courier-card" style="display: none;">
+          <div class="courier-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2a8 8 0 0 0-8 8v12h16V10a8 8 0 0 0-8-8z"></path>
+              <circle cx="9" cy="10" r="2"></circle>
+              <circle cx="15" cy="10" r="2"></circle>
+              <path d="m12 13-1 2h2l-1-2z"></path>
+            </svg>
+          </div>
+          <div class="courier-info">
+            <h4 id="track-courier-name">Hedwig (Snowy Owl Express)</h4>
+            <p id="track-courier-sub">Flying high above the Forbidden Forest with temperature-insulated cauldron packaging.</p>
+          </div>
+        </div>
+
+        <!-- Order Items Summary in Modal -->
+        <div class="modal-items-summary">
+          <div class="summary-heading">Ordered Concoctions</div>
+          <div id="track-items-list">
+            <!-- Items rendered via JS -->
+          </div>
+        </div>
+
+        <div style="margin-top: 1.5rem; text-align: center;">
+          <button class="admin-btn" style="width: 100%; justify-content: center;" onclick="APP.closeTrackerModalDirect()">
+            Close & Continue Browsing Menu
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ==========================================================================
+       ASSIGN COURIER MODAL (ADMIN ACTION)
+       ========================================================================== -->
+  <div class="courier-modal-backdrop" id="courier-modal-backdrop">
+    <div class="courier-modal">
+      <div class="modal-header" style="padding: 0 0 1rem; border-bottom: 1px solid var(--gold-border);">
+        <h3 style="font-family: var(--font-serif); color: var(--text-gold); font-size: 1.2rem;">
+          Assign Delivery Partner
+        </h3>
+        <button class="drawer-close-btn" onclick="APP.closeCourierModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.85rem;">
+        Select an authorized owl or wizarding courier to dispatch Order <strong id="assign-target-order-id" style="color: var(--text-gold);">#EP-XXXX</strong>.
+      </p>
+
+      <div class="courier-grid">
+        <button class="courier-option-btn" onclick="APP.confirmCourierAssignment('Hedwig (Snowy Owl Express)')">
+          <div class="courier-avatar" style="width: 40px; height: 40px;">
+            🦉
+          </div>
+          <div>
+            <div style="font-weight: 700; color: #fff; font-size: 0.9rem;">Hedwig</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Snowy Owl Express • Swift & Loyal</div>
+          </div>
+        </button>
+
+        <button class="courier-option-btn" onclick="APP.confirmCourierAssignment('Errol (Weasley Family Owl)')">
+          <div class="courier-avatar" style="width: 40px; height: 40px;">
+            🪶
+          </div>
+          <div>
+            <div style="font-weight: 700; color: #fff; font-size: 0.9rem;">Errol</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Veteran Great Grey Owl • Crash landing guaranteed</div>
+          </div>
+        </button>
+
+        <button class="courier-option-btn" onclick="APP.confirmCourierAssignment('Neville Longbottom (Herbology Apprentice)')">
+          <div class="courier-avatar" style="width: 40px; height: 40px;">
+            🌱
+          </div>
+          <div>
+            <div style="font-weight: 700; color: #fff; font-size: 0.9rem;">Neville Longbottom</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Specialized in live botanical drinks & Mandrake care</div>
+          </div>
+        </button>
+
+        <button class="courier-option-btn" onclick="APP.confirmCourierAssignment('Floo Powder Rapid Transit')">
+          <div class="courier-avatar" style="width: 40px; height: 40px;">
+            🔥
+          </div>
+          <div>
+            <div style="font-weight: 700; color: #fff; font-size: 0.9rem;">Floo Powder Express</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Instant emerald flame hearth-to-hearth delivery</div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==========================================================================
+       TOAST NOTIFICATION CONTAINER
+       ========================================================================== -->
+  <div class="toast-container" id="toast-container"></div>
+
+
+  <!-- ==========================================================================
+       8. JAVASCRIPT LOGIC & REACTIVE STATE STORE
+       ========================================================================== -->
+  <script>
+    /**
+     * ESPRESSO PATRONUM - SINGLE PAGE APPLICATION
+     * Complete Full-Stack In-Memory Reactive Architecture
+     */
+
+    // 1. SOUND SYNTHESIZER ENGINE (Web Audio API - Procedural Magical Chimes)
+    const SOUND = {
+      ctx: null,
+      enabled: true,
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+      },
+
+      play(type) {
+        if (!this.enabled) return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+          if (this.ctx.state === 'suspended') {
+            this.ctx.resume();
+          }
+
+          const now = this.ctx.currentTime;
+
+          if (type === 'add') {
+            // Magical soft harp ping (F#5 -> A#5)
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(740, now);
+            osc.frequency.exponentialRampToValueAtTime(932, now + 0.12);
+            gain.gain.setValueAtTime(0.18, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.25);
+          } 
+          else if (type === 'order_placed') {
+            // Ascending celestial chord (E5, G#5, B5, E6)
+            const freqs = [659.25, 830.61, 987.77, 1318.51];
+            freqs.forEach((freq, idx) => {
+              const osc = this.ctx.createOscillator();
+              const gain = this.ctx.createGain();
+              osc.type = 'triangle';
+              osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+              gain.gain.setValueAtTime(0, now);
+              gain.gain.setValueAtTime(0.15, now + idx * 0.08);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.4);
+              osc.connect(gain);
+              gain.connect(this.ctx.destination);
+              osc.start(now + idx * 0.08);
+              osc.stop(now + idx * 0.08 + 0.45);
+            });
+          }
+          else if (type === 'admin_alert') {
+            // Double brass / bell chime for staff
+            [880, 1174.66].forEach((freq, idx) => {
+              const osc = this.ctx.createOscillator();
+              const gain = this.ctx.createGain();
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(freq, now + idx * 0.14);
+              gain.gain.setValueAtTime(0.2, now + idx * 0.14);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.14 + 0.35);
+              osc.connect(gain);
+              gain.connect(this.ctx.destination);
+              osc.start(now + idx * 0.14);
+              osc.stop(now + idx * 0.14 + 0.35);
+            });
+          }
+          else if (type === 'delivered') {
+            // Triumphant golden sparkle
+            [1046.50, 1318.51, 1567.98, 2093.00].forEach((freq, idx) => {
+              const osc = this.ctx.createOscillator();
+              const gain = this.ctx.createGain();
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+              gain.gain.setValueAtTime(0.12, now + idx * 0.06);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.5);
+              osc.connect(gain);
+              gain.connect(this.ctx.destination);
+              osc.start(now + idx * 0.06);
+              osc.stop(now + idx * 0.06 + 0.5);
+            });
+          }
+        } catch (e) {
+          console.warn("Audio Context error:", e);
+        }
+      }
+    };
+
+    // 2. INITIAL SEED DATA
+    const INITIAL_MENU = [
+      {
+        id: 'brew-1',
+        name: 'Butterscotch Cold Brew',
+        category: 'Artisan Brews',
+        price: 280,
+        inStock: true,
+        desc: 'Slow-steeped over 18 hours in cooled enchanted mountain water, infused with caramelized butter toffee and topped with thick clotted butter-cream foam.',
+        magicalEffect: '✨ Restores 50 Stamina & Grants Cozy Warmth',
+        iconType: 'coffee'
+      },
+      {
+        id: 'potion-1',
+        name: 'Polyjuice Sparkler',
+        category: 'Signature Potions',
+        price: 340,
+        inStock: true,
+        desc: 'Effervescent emerald green kiwi, crushed lime essence, and edible celestial pearl shimmer that gently swirls under candlelight.',
+        magicalEffect: '🧪 Shifts subtle taste profiles sip by sip',
+        iconType: 'potion'
+      },
+      {
+        id: 'potion-2',
+        name: 'Felix Felicis Gold Elixir',
+        category: 'Signature Potions',
+        price: 380,
+        inStock: true,
+        desc: 'Liquid gold essence brewed with saffron strands, wild Himalayan honey, yuzu citrus, and suspended 24K edible gold leaf flakes.',
+        magicalEffect: '🍀 +100 Luck on O.W.L. exams and life choices',
+        iconType: 'flask'
+      },
+      {
+        id: 'bake-1',
+        name: 'Cauldron Hand Pie',
+        category: 'Magical Bakes',
+        price: 240,
+        inStock: true,
+        desc: 'Flaky jet-black cocoa and butter pastry crust shaped like a brewing cauldron, brimming with bubbling wild berry compote and dark spiced ganache.',
+        magicalEffect: '🔥 Warms the tongue with cinnamon embers',
+        iconType: 'pie'
+      },
+      {
+        id: 'brew-2',
+        name: "Dragon's Breath Espresso",
+        category: 'Artisan Brews',
+        price: 220,
+        inStock: true,
+        desc: 'Double shot of dark roasted volcanic beans extracted through enchanted copper pipes, laced with a whisper of habanero smoke and dark cacao.',
+        magicalEffect: '⚡ Instant Wakefulness Spell (No sleep for 12h)',
+        iconType: 'cup'
+      },
+      {
+        id: 'potion-3',
+        name: 'Amortentia Berry Latte',
+        category: 'Signature Potions',
+        price: 320,
+        inStock: true,
+        desc: 'Steamed oat milk tinted rose pink with beetroot and wild raspberries, topped with mother-of-pearl steam and candied jasmine petals.',
+        magicalEffect: '💖 Smells distinctively like whatever you love most',
+        iconType: 'heart_potion'
+      },
+      {
+        id: 'bake-2',
+        name: 'Golden Snitch Honey Macaron',
+        category: 'Magical Bakes',
+        price: 190,
+        inStock: true,
+        desc: 'Gilded honey and almond macaron sandwich with salted honeycomb buttercream, featuring delicate spun sugar wings.',
+        magicalEffect: '🪶 Caught in mid-air right out of the oven',
+        iconType: 'snitch'
+      },
+      {
+        id: 'brew-3',
+        name: 'Mandrake Root Cortado',
+        category: 'Artisan Brews',
+        price: 260,
+        inStock: true,
+        desc: 'Equal parts espresso and textured velvety milk, infused with roasted chicory and earthy ginseng root. Earmuffs not required.',
+        magicalEffect: '🌿 Cures fatigue from all dark curse encounters',
+        iconType: 'coffee'
+      },
+      {
+        id: 'bake-3',
+        name: 'Pumpkin Pasty of the Express',
+        category: 'Magical Bakes',
+        price: 210,
+        inStock: false,
+        desc: 'Traditional Hogwarts Express tender pastry filled with spiced roasted heirloom pumpkin, nutmeg, brown sugar, and toasted pecans.',
+        magicalEffect: '🚂 Nostalgic journey comfort food',
+        iconType: 'pastry'
+      }
+    ];
+
+    const INITIAL_ORDERS = [
+      {
+        id: 'EP-1042',
+        timestamp: '10 mins ago',
+        createdAt: Date.now() - 1000 * 60 * 10,
+        customer: {
+          name: 'Ron Weasley',
+          phone: '+91 98451 12345',
+          address: 'The Burrow, Ottery St Catchpole',
+          notes: 'Deliver to backyard shed, keep Errol awake.'
+        },
+        items: [
+          { id: 'brew-1', name: 'Butterscotch Cold Brew', qty: 2, price: 280 },
+          { id: 'bake-1', name: 'Cauldron Hand Pie', qty: 1, price: 240 }
+        ],
+        paymentMethod: 'COD',
+        subtotal: 800,
+        tax: 40,
+        deliveryFee: 40,
+        grandTotal: 880,
+        status: 'Accepted',
+        courier: null
+      },
+      {
+        id: 'EP-1041',
+        timestamp: '25 mins ago',
+        createdAt: Date.now() - 1000 * 60 * 25,
+        customer: {
+          name: 'Luna Lovegood',
+          phone: '+91 97112 88990',
+          address: 'Ravenclaw Tower, Hogwarts Castle',
+          notes: 'Watch out for Nargles on the staircase.'
+        },
+        items: [
+          { id: 'potion-2', name: 'Felix Felicis Gold Elixir', qty: 1, price: 380 },
+          { id: 'bake-2', name: 'Golden Snitch Honey Macaron', qty: 2, price: 190 }
+        ],
+        paymentMethod: 'UPI',
+        subtotal: 760,
+        tax: 38,
+        deliveryFee: 40,
+        grandTotal: 838,
+        status: 'Out for Delivery',
+        courier: 'Hedwig (Snowy Owl Express)'
+      }
+    ];
+
+    // 3. MAIN APPLICATION CONTROLLER
+    const APP = {
+      storageKey: 'espresso_patronum_state_v2',
+
+      state: {
+        activeView: 'client',
+        categoryFilter: 'all',
+        adminOrderFilter: 'all',
+        menu: [],
+        cart: {}, // { itemId: { item, qty } }
+        orders: [],
+        activeTrackingOrderId: null,
+        selectedPayment: 'UPI',
+        sound: true,
+        assigningOrderId: null
+      },
+
+      init() {
+        this.loadState();
+        this.bindEvents();
+        this.initCanvas();
+        this.renderAll();
+      },
+
+      loadState() {
+        try {
+          const raw = localStorage.getItem(this.storageKey);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            this.state.menu = parsed.menu || INITIAL_MENU;
+            this.state.cart = parsed.cart || {};
+            this.state.orders = parsed.orders || INITIAL_ORDERS;
+            this.state.activeTrackingOrderId = parsed.activeTrackingOrderId || (this.state.orders.length > 0 ? this.state.orders[0].id : null);
+            this.state.sound = parsed.sound !== undefined ? parsed.sound : true;
+          } else {
+            this.state.menu = JSON.parse(JSON.stringify(INITIAL_MENU));
+            this.state.cart = {};
+            this.state.orders = JSON.parse(JSON.stringify(INITIAL_ORDERS));
+            this.state.activeTrackingOrderId = this.state.orders[0].id;
+          }
+        } catch (e) {
+          console.error("Failed to load local storage state:", e);
+          this.state.menu = JSON.parse(JSON.stringify(INITIAL_MENU));
+          this.state.cart = {};
+          this.state.orders = JSON.parse(JSON.stringify(INITIAL_ORDERS));
+        }
+        SOUND.enabled = this.state.sound;
+      },
+
+      saveState() {
+        try {
+          localStorage.setItem(this.storageKey, JSON.stringify({
+            menu: this.state.menu,
+            cart: this.state.cart,
+            orders: this.state.orders,
+            activeTrackingOrderId: this.state.activeTrackingOrderId,
+            sound: this.state.sound
+          }));
+        } catch (e) {
+          console.warn("Storage write error:", e);
+        }
+      },
+
+      bindEvents() {
+        // Multi-tab real-time sync via window storage event!
+        window.addEventListener('storage', (e) => {
+          if (e.key === this.storageKey) {
+            this.loadState();
+            this.renderAll();
+            this.showToast('✨ Synced with magical network changes', 'refresh');
+          }
+        });
+
+        // Initialize audio on first click
+        window.addEventListener('click', () => {
+          SOUND.init();
+        }, { once: true });
+      },
+
+      renderAll() {
+        this.renderMenu();
+        this.renderCart();
+        this.renderAdminView();
+        this.updateActiveTrackerPill();
+        this.updateSoundIcon();
+      },
+
+      // --- VIEW SWITCHING ---
+      switchView(viewName) {
+        this.state.activeView = viewName;
+        document.querySelectorAll('.view-tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.client-view, .admin-view').forEach(el => el.classList.remove('active'));
+
+        if (viewName === 'client') {
+          document.getElementById('tab-client').classList.add('active');
+          document.getElementById('view-client').classList.add('active');
+        } else {
+          document.getElementById('tab-admin').classList.add('active');
+          document.getElementById('view-admin').classList.add('active');
+          this.renderAdminView();
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      },
+
+      toggleSound() {
+        this.state.sound = !this.state.sound;
+        SOUND.enabled = this.state.sound;
+        this.updateSoundIcon();
+        this.saveState();
+        if (this.state.sound) {
+          SOUND.play('add');
+          this.showToast('Magical audio chimes enabled', 'sound');
+        } else {
+          this.showToast('Audio muted', 'sound');
+        }
+      },
+
+      updateSoundIcon() {
+        const btn = document.getElementById('sound-toggle-btn');
+        if (!btn) return;
+        btn.innerHTML = this.state.sound
+          ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2">
+               <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+               <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+               <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+             </svg>`
+          : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7d7289" stroke-width="2">
+               <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+               <line x1="23" y1="9" x2="17" y2="15"></line>
+               <line x1="17" y1="9" x2="23" y2="15"></line>
+             </svg>`;
+      },
+
+      // --- MENU RENDERING & FILTERING ---
+      filterCategory(cat, btn) {
+        this.state.categoryFilter = cat;
+        document.querySelectorAll('.category-filter-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        this.renderMenu();
+      },
+
+      getIllustrationSVG(iconType) {
+        switch (iconType) {
+          case 'potion':
+            return `
+              <svg class="card-illustration" viewBox="0 0 64 64" fill="none">
+                <path d="M26 12h12v8l12 28a4 4 0 0 1-4 4H18a4 4 0 0 1-4-4l12-28v-8z" fill="rgba(16, 185, 129, 0.15)" stroke="#10b981" stroke-width="2.5"/>
+                <path d="M22 34c4-3 16-3 20 0l6 14H16l6-14z" fill="url(#potionGrad)"/>
+                <circle cx="28" cy="40" r="2.5" fill="#34d399"/>
+                <circle cx="36" cy="38" r="1.5" fill="#34d399"/>
+                <path d="M24 12h16" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
+                <defs>
+                  <linearGradient id="potionGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#10b981"/>
+                    <stop offset="100%" stop-color="#059669"/>
+                  </linearGradient>
+                </defs>
+              </svg>`;
+          case 'flask':
+            return `
+              <svg class="card-illustration" viewBox="0 0 64 64" fill="none">
+                <circle cx="32" cy="36" r="20" fill="rgba(245, 158, 11, 0.12)" stroke="#f59e0b" stroke-width="2.5"/>
+                <rect x="28" y="6" width="8" height="12" rx="1" fill="#181320" stroke="#f59e0b" stroke-width="2"/>
+                <ellipse cx="32" cy="6" rx="6" ry="2" fill="#fbbf24"/>
+                <path d="M16 40c6-4 26-4 32 0v8a16 16 0 0 1-32 0v-8z" fill="url(#goldGrad)"/>
+                <circle cx="32" cy="42" r="3" fill="#ffffff" opacity="0.8"/>
+                <defs>
+                  <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#fbbf24"/>
+                    <stop offset="100%" stop-color="#d97706"/>
+                  </linearGradient>
+                </defs>
+              </svg>`;
+          case 'heart_potion':
+            return `
+              <svg class="card-illustration" viewBox="0 0 64 64" fill="none">
+                <path d="M32 54 C16 42 10 30 10 20 A10 10 0 0 1 30 14 L32 18 L34 14 A10 10 0 0 1 54 20 C54 30 48 42 32 54 Z" fill="rgba(236, 72, 153, 0.2)" stroke="#ec4899" stroke-width="2.5"/>
+                <path d="M22 26 A5 5 0 0 1 30 24" stroke="#f472b6" stroke-width="2" stroke-linecap="round"/>
+              </svg>`;
+          case 'pie':
+          case 'pastry':
+            return `
+              <svg class="card-illustration" viewBox="0 0 64 64" fill="none">
+                <path d="M12 36c0-10 10-18 20-18s20 8 20 18v6a2 2 0 0 1-2 2H14a2 2 0 0 1-2-2v-6z" fill="rgba(245, 158, 11, 0.18)" stroke="#f59e0b" stroke-width="2.5"/>
+                <path d="M20 32l4-4M30 32l2-6M40 32l-2-6" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
+                <path d="M10 44h44" stroke="#d97706" stroke-width="3" stroke-linecap="round"/>
+              </svg>`;
+          case 'snitch':
+            return `
+              <svg class="card-illustration" viewBox="0 0 64 64" fill="none">
+                <circle cx="32" cy="32" r="11" fill="url(#snitchGrad)" stroke="#fde68a" stroke-width="2.5"/>
+                <path d="M10 24c6-8 12-4 13 4-6 2-10 0-13-4z" fill="rgba(253, 230, 138, 0.4)" stroke="#f59e0b" stroke-width="1.8"/>
+                <path d="M54 24c-6-8-12-4-13 4 6 2 10 0 13-4z" fill="rgba(253, 230, 138, 0.4)" stroke="#f59e0b" stroke-width="1.8"/>
+                <defs>
+                  <linearGradient id="snitchGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#fef08a"/>
+                    <stop offset="100%" stop-color="#b45309"/>
+                  </linearGradient>
+                </defs>
+              </svg>`;
+          case 'cup':
+          case 'coffee':
+          default:
+            return `
+              <svg class="card-illustration" viewBox="0 0 64 64" fill="none">
+                <path d="M16 22h26a2 2 0 0 1 2 2v14a12 12 0 0 1-12 12H26A12 12 0 0 1 14 38V24a2 2 0 0 1 2-2z" fill="rgba(245, 158, 11, 0.15)" stroke="#f59e0b" stroke-width="2.5"/>
+                <path d="M44 26h4a6 6 0 0 1 0 12h-4" stroke="#f59e0b" stroke-width="2.5"/>
+                <path d="M12 52h34" stroke="#d97706" stroke-width="3" stroke-linecap="round"/>
+                <path d="M24 16c1-2 1-4 0-6M30 16c1-2 1-4 0-6M36 16c1-2 1-4 0-6" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
+              </svg>`;
+        }
+      },
+
+      renderMenu() {
+        const grid = document.getElementById('menu-items-grid');
+        if (!grid) return;
+
+        const filtered = this.state.categoryFilter === 'all'
+          ? this.state.menu
+          : this.state.menu.filter(i => i.category === this.state.categoryFilter);
+
+        grid.innerHTML = filtered.map(item => {
+          const isSoldOut = !item.inStock;
+          const cartQty = this.state.cart[item.id] ? this.state.cart[item.id].qty : 0;
+
+          return `
+            <div class="menu-card ${isSoldOut ? 'sold-out' : ''}" id="card-${item.id}">
+              <div class="card-banner">
+                <span class="card-category-tag">${item.category}</span>
+                <span class="card-stock-badge ${isSoldOut ? 'stock-badge-out' : 'stock-badge-in'}">
+                  ${isSoldOut ? 'Sold Out' : 'In Stock'}
+                </span>
+                ${this.getIllustrationSVG(item.iconType)}
+              </div>
+
+              <div class="card-content">
+                <div class="card-header-row">
+                  <h4 class="card-title">${item.name}</h4>
+                  <span class="card-price">₹${item.price}</span>
+                </div>
+
+                <p class="card-desc">${item.desc}</p>
+
+                <div class="card-magical-meta">
+                  ${item.magicalEffect}
+                </div>
+
+                <div class="card-footer">
+                  <button 
+                    class="add-to-cart-btn" 
+                    ${isSoldOut ? 'disabled' : ''} 
+                    onclick="APP.addToCart('${item.id}')"
+                    id="btn-add-${item.id}"
+                  >
+                    ${isSoldOut 
+                      ? '<span>Depleted in Chamber</span>' 
+                      : (cartQty > 0 
+                          ? `<span>+ Add Another (${cartQty} in Cauldron)</span>` 
+                          : `<span>+ Add to Cart</span>`
+                        )
+                    }
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      },
+
+      // --- CART & CHECKOUT MANAGEMENT ---
+      addToCart(itemId) {
+        const item = this.state.menu.find(i => i.id === itemId);
+        if (!item || !item.inStock) {
+          this.showToast('Item is depleted in our cauldron storeroom!', 'warning');
+          return;
+        }
+
+        if (this.state.cart[itemId]) {
+          this.state.cart[itemId].qty += 1;
+        } else {
+          this.state.cart[itemId] = { item, qty: 1 };
+        }
+
+        SOUND.play('add');
+        this.saveState();
+        this.renderCart();
+        this.renderMenu();
+        this.showToast(`Added ${item.name} to Cauldron!`, 'cart');
+      },
+
+      updateCartQty(itemId, delta) {
+        if (!this.state.cart[itemId]) return;
+        const newQty = this.state.cart[itemId].qty + delta;
+
+        if (newQty <= 0) {
+          delete this.state.cart[itemId];
+          SOUND.play('add');
+        } else {
+          this.state.cart[itemId].qty = newQty;
+          SOUND.play('add');
+        }
+
+        this.saveState();
+        this.renderCart();
+        this.renderMenu();
+      },
+
+      openCart() {
+        document.getElementById('cart-drawer-backdrop').classList.add('open');
+        document.getElementById('cart-drawer').classList.add('open');
+      },
+
+      closeCart() {
+        document.getElementById('cart-drawer-backdrop').classList.remove('open');
+        document.getElementById('cart-drawer').classList.remove('open');
+      },
+
+      selectPayment(method) {
+        this.state.selectedPayment = method;
+        document.getElementById('pay-opt-upi').classList.toggle('selected', method === 'UPI');
+        document.getElementById('pay-opt-cod').classList.toggle('selected', method === 'COD');
+        document.getElementById('upi-box').classList.toggle('active', method === 'UPI');
+      },
+
+      renderCart() {
+        const list = document.getElementById('cart-items-list');
+        const countElements = [
+          document.getElementById('nav-cart-count'),
+          document.getElementById('floating-cart-count')
+        ];
+
+        const entries = Object.values(this.state.cart);
+        const totalItemsCount = entries.reduce((acc, curr) => acc + curr.qty, 0);
+
+        countElements.forEach(el => {
+          if (el) el.textContent = totalItemsCount;
+        });
+
+        if (entries.length === 0) {
+          if (list) {
+            list.innerHTML = `
+              <div class="empty-cart-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.5">
+                  <path d="M4 11h16a1 1 0 0 1 1 1c0 5-4 9-9 9s-9-4-9-9a1 1 0 0 1 1-1z"></path>
+                  <path d="M6 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2"></path>
+                </svg>
+                <p>Your cauldron is hollow. Summon delicious potions and baked charms from the menu above!</p>
+              </div>
+            `;
+          }
+          document.getElementById('bill-subtotal').textContent = '₹0';
+          document.getElementById('bill-tax').textContent = '₹0';
+          document.getElementById('bill-delivery').textContent = '₹0';
+          document.getElementById('bill-total').textContent = '₹0';
+          const submitBtn = document.getElementById('submit-order-btn');
+          if (submitBtn) submitBtn.disabled = true;
+          return;
+        }
+
+        let subtotal = 0;
+        if (list) {
+          list.innerHTML = entries.map(({ item, qty }) => {
+            const lineTotal = item.price * qty;
+            subtotal += lineTotal;
+            return `
+              <div class="cart-item-row">
+                <div class="cart-item-thumb">
+                  ${this.getIllustrationSVG(item.iconType)}
+                </div>
+                <div class="cart-item-info">
+                  <div class="cart-item-name">${item.name}</div>
+                  <div class="cart-item-unit-price">₹${item.price} each</div>
+                </div>
+                <div class="cart-item-stepper">
+                  <button class="stepper-btn" onclick="APP.updateCartQty('${item.id}', -1)" aria-label="Decrease quantity">-</button>
+                  <span class="stepper-qty">${qty}</span>
+                  <button class="stepper-btn" onclick="APP.updateCartQty('${item.id}', 1)" aria-label="Increase quantity">+</button>
+                </div>
+                <div class="cart-item-total">₹${lineTotal}</div>
+              </div>
+            `;
+          }).join('');
+        }
+
+        const tax = Math.round(subtotal * 0.05);
+        const deliveryFee = subtotal > 600 ? 0 : 40;
+        const grandTotal = subtotal + tax + deliveryFee;
+
+        document.getElementById('bill-subtotal').textContent = `₹${subtotal}`;
+        document.getElementById('bill-tax').textContent = `₹${tax}`;
+        document.getElementById('bill-delivery').textContent = deliveryFee === 0 ? 'FREE (Special Patronus)' : `₹${deliveryFee}`;
+        document.getElementById('bill-total').textContent = `₹${grandTotal}`;
+
+        const submitBtn = document.getElementById('submit-order-btn');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `
+            <span>Cast Order Spell (Pay ₹${grandTotal})</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          `;
+        }
+      },
+
+      submitOrder() {
+        const entries = Object.values(this.state.cart);
+        if (entries.length === 0) return;
+
+        const nameInput = document.getElementById('cust-name');
+        const phoneInput = document.getElementById('cust-phone');
+        const addressInput = document.getElementById('cust-address');
+        const notesInput = document.getElementById('cust-notes');
+
+        const name = (nameInput?.value || '').trim() || 'Hogwarts Student';
+        const phone = (phoneInput?.value || '').trim() || '+91 99999 00000';
+        const address = (addressInput?.value || '').trim() || 'Great Hall, Hogwarts Castle';
+        const notes = (notesInput?.value || '').trim();
+
+        let subtotal = 0;
+        const items = entries.map(({ item, qty }) => {
+          subtotal += item.price * qty;
+          return {
+            id: item.id,
+            name: item.name,
+            qty,
+            price: item.price
+          };
+        });
+
+        const tax = Math.round(subtotal * 0.05);
+        const deliveryFee = subtotal > 600 ? 0 : 40;
+        const grandTotal = subtotal + tax + deliveryFee;
+
+        const newOrderId = 'EP-' + Math.floor(1000 + Math.random() * 9000);
+        const newOrder = {
+          id: newOrderId,
+          timestamp: 'Just now',
+          createdAt: Date.now(),
+          customer: { name, phone, address, notes },
+          items,
+          paymentMethod: this.state.selectedPayment,
+          subtotal,
+          tax,
+          deliveryFee,
+          grandTotal,
+          status: 'Placed',
+          courier: null
+        };
+
+        // Add to front of order queue
+        this.state.orders.unshift(newOrder);
+        this.state.activeTrackingOrderId = newOrderId;
+        this.state.cart = {};
+
+        SOUND.play('order_placed');
+        this.saveState();
+        this.closeCart();
+        this.renderAll();
+
+        this.showToast(`✨ Spell cast! Order ${newOrderId} placed in the Great Hall.`, 'order');
+
+        // Automatically launch Live Order Tracking Modal
+        setTimeout(() => {
+          this.openTrackerModal(newOrderId);
+        }, 350);
+      },
+
+      // --- LIVE ORDER TRACKING MODAL (5-STEP PROGRESS) ---
+      openTrackerModal(orderId) {
+        const order = this.state.orders.find(o => o.id === orderId) || this.state.orders[0];
+        if (!order) {
+          this.showToast('No active orders found to track.', 'warning');
+          return;
+        }
+
+        this.state.activeTrackingOrderId = order.id;
+        this.saveState();
+        this.renderTrackerData(order);
+
+        document.getElementById('tracker-modal-backdrop').classList.add('open');
+      },
+
+      closeTrackerModal(e) {
+        if (e.target.id === 'tracker-modal-backdrop') {
+          this.closeTrackerModalDirect();
+        }
+      },
+
+      closeTrackerModalDirect() {
+        document.getElementById('tracker-modal-backdrop').classList.remove('open');
+      },
+
+      renderTrackerData(order) {
+        document.getElementById('track-order-id').textContent = '#' + order.id;
+        document.getElementById('track-order-time').textContent = order.timestamp || 'Just now';
+
+        // 5 Steps: Placed (1), Accepted (2), Brewing (3), Out for Delivery (4), Delivered (5)
+        const stepMap = {
+          'Placed': 1,
+          'Accepted': 2,
+          'Brewing': 3,
+          'Out for Delivery': 4,
+          'Delivered': 5
+        };
+
+        const currentStep = stepMap[order.status] || 1;
+
+        // Update progress bar track fill %
+        const fillPercents = { 1: 0, 2: 25, 3: 50, 4: 75, 5: 100 };
+        document.getElementById('track-progress-fill').style.width = `${fillPercents[currentStep]}%`;
+
+        // Update node classes
+        for (let i = 1; i <= 5; i++) {
+          const node = document.getElementById(`step-node-${i}`);
+          if (!node) continue;
+          node.classList.remove('active', 'completed');
+          if (i < currentStep) {
+            node.classList.add('completed');
+          } else if (i === currentStep) {
+            node.classList.add('active');
+          }
+        }
+
+        // Dynamic headline and status message
+        const badgeText = document.getElementById('track-status-text');
+        const headline = document.getElementById('track-headline');
+        const subtext = document.getElementById('track-subtext');
+        const courierCard = document.getElementById('track-courier-card');
+        const courierName = document.getElementById('track-courier-name');
+
+        badgeText.textContent = order.status;
+
+        if (order.status === 'Placed') {
+          headline.textContent = 'Your spell has reached the Great Hall';
+          subtext.textContent = 'Awaiting Head Barista confirmation. Your ticket is glowing on the kitchen parchment board.';
+          courierCard.style.display = 'none';
+        } else if (order.status === 'Accepted') {
+          headline.textContent = 'Your order has been accepted by the Head Barista';
+          subtext.textContent = 'The ingredients are being weighed and charmed. Your cauldron station is being prepared.';
+          courierCard.style.display = 'none';
+        } else if (order.status === 'Brewing') {
+          headline.textContent = 'Potions & Brews are boiling in the cauldron';
+          subtext.textContent = 'Roasted beans under dragon flame, milk steamed with silver wands. Fragrance is filling the halls.';
+          courierCard.style.display = 'none';
+        } else if (order.status === 'Out for Delivery') {
+          const courier = order.courier || 'Hedwig (Snowy Owl Express)';
+          headline.textContent = `Your order is out for delivery with ${courier}!`;
+          subtext.textContent = `Look up towards the dormitory window! Your insulated thermal parcel is soaring through the sky.`;
+          courierCard.style.display = 'flex';
+          courierName.textContent = courier;
+        } else if (order.status === 'Delivered') {
+          headline.textContent = 'Delivered safely to your dormitory!';
+          subtext.textContent = 'Your magical brew has arrived. Enjoy every drop, and may your patronus shine bright!';
+          courierCard.style.display = 'flex';
+          courierName.textContent = `${order.courier || 'Authorized Owl'} (Delivered Successfully)`;
+        }
+
+        // Render Items inside Modal
+        const itemsList = document.getElementById('track-items-list');
+        if (itemsList) {
+          itemsList.innerHTML = order.items.map(it => `
+            <div class="modal-item-line">
+              <span><strong>${it.qty}x</strong> ${it.name}</span>
+              <span style="color: var(--text-gold); font-weight: 600;">₹${it.price * it.qty}</span>
+            </div>
+          `).join('') + `
+            <div class="modal-item-line" style="margin-top: 0.5rem; font-weight: 700; color: var(--text-gold); border-top: 1px dashed var(--gold-border); padding-top: 0.5rem;">
+              <span>Total Paid (${order.paymentMethod})</span>
+              <span>₹${order.grandTotal}</span>
+            </div>
+          `;
+        }
+      },
+
+      updateActiveTrackerPill() {
+        const btn = document.getElementById('nav-active-tracker-btn');
+        const idSpan = document.getElementById('nav-active-order-id');
+        if (!btn || !idSpan) return;
+
+        const activeOrder = this.state.orders.find(o => o.id === this.state.activeTrackingOrderId) 
+          || this.state.orders.find(o => o.status !== 'Delivered');
+
+        if (activeOrder) {
+          btn.style.display = 'flex';
+          idSpan.textContent = activeOrder.id;
+        } else {
+          btn.style.display = 'none';
+        }
+      },
+
+      // --- ADMIN VIEW: OPERATIONS DASHBOARD ---
+      filterAdminOrders(filter, btn) {
+        this.state.adminOrderFilter = filter;
+        document.querySelectorAll('.admin-tab-link').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        this.renderAdminOrdersQueue();
+      },
+
+      renderAdminView() {
+        this.renderAdminMetrics();
+        this.renderAdminOrdersQueue();
+        this.renderInventoryTable();
+      },
+
+      renderAdminMetrics() {
+        const orders = this.state.orders;
+        const totalRevenue = orders
+          .filter(o => o.status === 'Delivered' || o.paymentMethod === 'UPI')
+          .reduce((sum, o) => sum + o.grandTotal, 0);
+
+        const pendingCount = orders.filter(o => o.status === 'Placed').length;
+        const brewingCount = orders.filter(o => o.status === 'Accepted' || o.status === 'Brewing').length;
+        const completedCount = orders.filter(o => o.status === 'Delivered').length;
+
+        document.getElementById('metric-revenue').textContent = `₹${totalRevenue.toLocaleString()}`;
+        document.getElementById('metric-pending').textContent = pendingCount;
+        document.getElementById('metric-brews').textContent = brewingCount;
+        document.getElementById('metric-completed').textContent = completedCount;
+
+        // Pending count pill in top nav
+        const adminPill = document.getElementById('admin-pending-count');
+        if (adminPill) {
+          adminPill.textContent = pendingCount;
+          adminPill.style.display = pendingCount > 0 ? 'inline-block' : 'none';
+        }
+
+        // Subtab counts
+        const cntAll = document.getElementById('admin-count-all');
+        const cntPlaced = document.getElementById('admin-count-placed');
+        const cntBrewing = document.getElementById('admin-count-brewing');
+        const cntDispatched = document.getElementById('admin-count-dispatched');
+        const cntDelivered = document.getElementById('admin-count-delivered');
+
+        if (cntAll) cntAll.textContent = orders.length;
+        if (cntPlaced) cntPlaced.textContent = pendingCount;
+        if (cntBrewing) cntBrewing.textContent = brewingCount;
+        if (cntDispatched) cntDispatched.textContent = orders.filter(o => o.status === 'Out for Delivery').length;
+        if (cntDelivered) cntDelivered.textContent = completedCount;
+      },
+
+      renderAdminOrdersQueue() {
+        const queue = document.getElementById('orders-queue-container');
+        if (!queue) return;
+
+        let filtered = this.state.orders;
+        const f = this.state.adminOrderFilter;
+
+        if (f === 'Placed') {
+          filtered = filtered.filter(o => o.status === 'Placed');
+        } else if (f === 'In Kitchen') {
+          filtered = filtered.filter(o => o.status === 'Accepted' || o.status === 'Brewing');
+        } else if (f === 'Out for Delivery') {
+          filtered = filtered.filter(o => o.status === 'Out for Delivery');
+        } else if (f === 'Delivered') {
+          filtered = filtered.filter(o => o.status === 'Delivered');
+        }
+
+        if (filtered.length === 0) {
+          queue.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; color: var(--text-dim); background: var(--bg-card); border-radius: var(--radius-md); border: 1px dashed var(--gold-border);">
+              <p style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--text-muted);">No orders matching this filter</p>
+              <button class="admin-btn primary" style="margin: 0.5rem auto 0;" onclick="APP.generateMockOrder()">
+                <span>+ Simulate An Incoming Order</span>
+              </button>
+            </div>
+          `;
+          return;
+        }
+
+        queue.innerHTML = filtered.map(order => {
+          return `
+            <div class="order-card" id="admin-card-${order.id}">
+              <div class="order-card-header">
+                <div>
+                  <div class="order-id-badge">
+                    <span>📜</span> #${order.id}
+                  </div>
+                  <div class="order-time-stamp">${order.timestamp}</div>
+                </div>
+                <div>
+                  <span class="stock-badge-in" style="font-size: 0.72rem; padding: 0.25rem 0.65rem;">
+                    ${order.status}
+                  </span>
+                </div>
+              </div>
+
+              <div class="order-customer-box">
+                <div class="customer-name">
+                  <span>🧙</span> ${order.customer.name}
+                </div>
+                <div class="customer-details">
+                  <div>📞 ${order.customer.phone}</div>
+                  <div>📍 ${order.customer.address}</div>
+                  ${order.customer.notes ? `<div style="color: var(--text-gold); font-style: italic;">“${order.customer.notes}”</div>` : ''}
+                  ${order.courier ? `<div style="color: #34d399; font-weight: 600; margin-top: 3px;">🦉 Courier: ${order.courier}</div>` : ''}
+                </div>
+              </div>
+
+              <div class="order-items-list">
+                ${order.items.map(it => `
+                  <div class="order-item-entry">
+                    <span><span class="order-item-qty">${it.qty}x</span> ${it.name}</span>
+                    <span style="color: var(--text-gold);">₹${it.price * it.qty}</span>
+                  </div>
+                `).join('')}
+              </div>
+
+              <div class="order-meta-row">
+                <span class="payment-tag ${order.paymentMethod.toLowerCase()}">
+                  ${order.paymentMethod === 'UPI' ? '⚡ UPI Paid' : '🪙 Collect COD'}
+                </span>
+                <span class="order-grand-total">₹${order.grandTotal}</span>
+              </div>
+
+              <div class="order-actions-row">
+                ${this.renderAdminActionButtons(order)}
+              </div>
+            </div>
+          `;
+        }).join('');
+      },
+
+      renderAdminActionButtons(order) {
+        if (order.status === 'Placed') {
+          return `
+            <button class="admin-action-btn btn-accept" onclick="APP.updateOrderStatus('${order.id}', 'Accepted')">
+              <span>✓ Accept Order</span>
+            </button>
+          `;
+        } else if (order.status === 'Accepted') {
+          return `
+            <button class="admin-action-btn btn-brew" onclick="APP.updateOrderStatus('${order.id}', 'Brewing')">
+              <span>🔥 Start Brewing</span>
+            </button>
+          `;
+        } else if (order.status === 'Brewing') {
+          return `
+            <button class="admin-action-btn btn-dispatch" onclick="APP.openCourierModal('${order.id}')">
+              <span>🦉 Assign Delivery Partner</span>
+            </button>
+          `;
+        } else if (order.status === 'Out for Delivery') {
+          return `
+            <button class="admin-action-btn btn-complete" onclick="APP.updateOrderStatus('${order.id}', 'Delivered')">
+              <span>★ Mark Delivered</span>
+            </button>
+          `;
+        } else {
+          return `
+            <div style="font-size: 0.78rem; color: #34d399; display: flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0;">
+              <span>✓ Lifecycle Completed</span>
+            </div>
+          `;
+        }
+      },
+
+      updateOrderStatus(orderId, nextStatus, courierName = null) {
+        const order = this.state.orders.find(o => o.id === orderId);
+        if (!order) return;
+
+        order.status = nextStatus;
+        if (courierName) {
+          order.courier = courierName;
+        }
+
+        // Play appropriate sound notification
+        if (nextStatus === 'Accepted') {
+          SOUND.play('admin_alert');
+          this.showToast(`Order #${orderId} marked Accepted by Head Barista`, 'check');
+        } else if (nextStatus === 'Brewing') {
+          SOUND.play('add');
+          this.showToast(`Cauldron boiling for Order #${orderId}`, 'cauldron');
+        } else if (nextStatus === 'Out for Delivery') {
+          SOUND.play('admin_alert');
+          this.showToast(`Dispatched Order #${orderId} via ${order.courier}`, 'owl');
+        } else if (nextStatus === 'Delivered') {
+          SOUND.play('delivered');
+          this.showToast(`Order #${orderId} delivered! Revenue added to vaults.`, 'gold');
+        }
+
+        this.saveState();
+        this.renderAdminView();
+        this.updateActiveTrackerPill();
+
+        // If this order is currently being tracked in the modal, update it in real time!
+        if (this.state.activeTrackingOrderId === orderId) {
+          this.renderTrackerData(order);
+        }
+      },
+
+      // --- COURIER DISPATCH MODAL ---
+      openCourierModal(orderId) {
+        this.state.assigningOrderId = orderId;
+        document.getElementById('assign-target-order-id').textContent = '#' + orderId;
+        document.getElementById('courier-modal-backdrop').classList.add('open');
+      },
+
+      closeCourierModal() {
+        this.state.assigningOrderId = null;
+        document.getElementById('courier-modal-backdrop').classList.remove('open');
+      },
+
+      confirmCourierAssignment(courierName) {
+        if (!this.state.assigningOrderId) return;
+        const targetId = this.state.assigningOrderId;
+        this.closeCourierModal();
+        this.updateOrderStatus(targetId, 'Out for Delivery', courierName);
+      },
+
+      // --- INVENTORY MANAGER (REAL-TIME STOCK TOGGLES) ---
+      renderInventoryTable() {
+        const tbody = document.getElementById('inventory-table-body');
+        if (!tbody) return;
+
+        tbody.innerHTML = this.state.menu.map(item => {
+          return `
+            <tr>
+              <td>
+                <span class="card-category-tag" style="position: static;">${item.category}</span>
+              </td>
+              <td>
+                <strong style="color: var(--text-main);">${item.name}</strong>
+              </td>
+              <td style="color: var(--text-gold); font-weight: 700;">
+                ₹${item.price}
+              </td>
+              <td>
+                <span class="${item.inStock ? 'stock-badge-in' : 'stock-badge-out'}" style="padding: 0.2rem 0.55rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 700;">
+                  ${item.inStock ? 'In Stock' : 'Sold Out'}
+                </span>
+              </td>
+              <td style="text-align: right;">
+                <label class="switch-label">
+                  <input type="checkbox" ${item.inStock ? 'checked' : ''} onchange="APP.toggleItemStock('${item.id}', this.checked)">
+                  <span class="switch-slider"></span>
+                </label>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      },
+
+      toggleItemStock(itemId, isChecked) {
+        const item = this.state.menu.find(i => i.id === itemId);
+        if (!item) return;
+
+        item.inStock = isChecked;
+        SOUND.play('add');
+        this.saveState();
+        this.renderMenu();
+        this.renderInventoryTable();
+
+        this.showToast(
+          `${item.name} is now ${isChecked ? 'In Stock' : 'Marked Sold Out'}!`,
+          isChecked ? 'check' : 'warning'
+        );
+      },
+
+      restockAllInventory() {
+        this.state.menu.forEach(item => {
+          item.inStock = true;
+        });
+        SOUND.play('delivered');
+        this.saveState();
+        this.renderMenu();
+        this.renderInventoryTable();
+        this.showToast('All menu cauldrons & bakes restocked to 100%!', 'check');
+      },
+
+      generateMockOrder() {
+        const sampleCustomers = [
+          { name: 'Draco Malfoy', phone: '+91 98110 54321', address: 'Malfoy Manor, Wiltshire', notes: 'Deliver only through pure-blood owl.' },
+          { name: 'Neville Longbottom', phone: '+91 97223 99887', address: 'Herbology Greenhouse 3, Hogwarts', notes: 'Leave parcel next to the Venomous Tentacula.' },
+          { name: 'Cho Chang', phone: '+91 96541 23456', address: 'Ravenclaw Common Room', notes: 'Knock answering the riddle first.' },
+          { name: 'Albus Dumbledore', phone: '+91 99999 11111', address: "Headmaster's Office, Hogwarts", notes: 'Password: Sherbet Lemon.' }
+        ];
+
+        const randomCust = sampleCustomers[Math.floor(Math.random() * sampleCustomers.length)];
+        const inStockItems = this.state.menu.filter(i => i.inStock);
+        if (inStockItems.length === 0) return;
+
+        const pick1 = inStockItems[Math.floor(Math.random() * inStockItems.length)];
+        const pick2 = inStockItems[Math.floor(Math.random() * inStockItems.length)];
+
+        const items = [{ id: pick1.id, name: pick1.name, qty: 1, price: pick1.price }];
+        if (pick2.id !== pick1.id) {
+          items.push({ id: pick2.id, name: pick2.name, qty: 2, price: pick2.price });
+        }
+
+        const subtotal = items.reduce((s, it) => s + it.price * it.qty, 0);
+        const tax = Math.round(subtotal * 0.05);
+        const deliveryFee = 40;
+        const grandTotal = subtotal + tax + deliveryFee;
+
+        const newOrderId = 'EP-' + Math.floor(1000 + Math.random() * 9000);
+        const newOrder = {
+          id: newOrderId,
+          timestamp: 'Just now',
+          createdAt: Date.now(),
+          customer: randomCust,
+          items,
+          paymentMethod: Math.random() > 0.5 ? 'UPI' : 'COD',
+          subtotal,
+          tax,
+          deliveryFee,
+          grandTotal,
+          status: 'Placed',
+          courier: null
+        };
+
+        this.state.orders.unshift(newOrder);
+        SOUND.play('admin_alert');
+        this.saveState();
+        this.renderAdminView();
+        this.updateActiveTrackerPill();
+
+        this.showToast(`🦉 New Incoming Order #${newOrderId} from ${randomCust.name}!`, 'owl');
+      },
+
+      // --- TOAST NOTIFICATIONS ---
+      showToast(message, type = 'default') {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = 'magic-toast';
+
+        let iconSvg = `
+          <svg class="toast-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+        `;
+
+        if (type === 'owl') {
+          iconSvg = `<span>🦉</span>`;
+        } else if (type === 'check') {
+          iconSvg = `<span>✨</span>`;
+        } else if (type === 'warning') {
+          iconSvg = `<span>⚠️</span>`;
+        } else if (type === 'cart') {
+          iconSvg = `<span>☕</span>`;
+        }
+
+        toast.innerHTML = `
+          ${iconSvg}
+          <div style="flex: 1; line-height: 1.35;">${message}</div>
+        `;
+
+        container.appendChild(toast);
+
+        setTimeout(() => {
+          toast.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(10px)';
+          setTimeout(() => toast.remove(), 400);
+        }, 3200);
+      },
+
+      // --- MAGICAL DUST PARTICLES CANVAS ---
+      initCanvas() {
+        const canvas = document.getElementById('magical-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+          width = canvas.width = window.innerWidth;
+          height = canvas.height = window.innerHeight;
+        });
+
+        const particles = [];
+        const count = Math.min(width > 768 ? 45 : 22, 60);
+
+        for (let i = 0; i < count; i++) {
+          particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            radius: Math.random() * 1.8 + 0.4,
+            speedY: -(Math.random() * 0.45 + 0.15),
+            speedX: (Math.random() - 0.5) * 0.3,
+            alpha: Math.random() * 0.6 + 0.2,
+            gold: Math.random() > 0.4
+          });
+        }
+
+        function animate() {
+          ctx.clearRect(0, 0, width, height);
+
+          particles.forEach(p => {
+            p.y += p.speedY;
+            p.x += p.speedX;
+
+            if (p.y < -10) {
+              p.y = height + 10;
+              p.x = Math.random() * width;
+            }
+            if (p.x < -10) p.x = width + 10;
+            if (p.x > width + 10) p.x = -10;
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = p.gold 
+              ? `rgba(245, 158, 11, ${p.alpha})`
+              : `rgba(16, 185, 129, ${p.alpha * 0.8})`;
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = p.gold ? '#f59e0b' : '#10b981';
+            ctx.fill();
+          });
+
+          requestAnimationFrame(animate);
+        }
+
+        animate();
+      }
+    };
+
+    // Auto-launch once DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      APP.init();
+    });
+  </script>
+</body>
+</html>
