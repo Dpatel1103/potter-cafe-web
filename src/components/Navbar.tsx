@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useOrder } from "@/context/OrderContext";
 import {
@@ -39,9 +40,15 @@ export function Navbar() {
           href="/"
           className="flex items-center gap-3 group focus:outline-none"
         >
-          <div className="relative w-11 h-11 rounded-full bg-gradient-to-br from-amber-500/20 via-purple-900/30 to-amber-600/10 border border-amber-500/40 flex items-center justify-center text-amber-400 group-hover:border-amber-400 group-hover:shadow-[0_0_18px_rgba(245,158,11,0.4)] transition-all">
-            <Sparkles className="w-6 h-6 animate-pulse" />
-            <span className="absolute -top-1 -right-1 text-xs">✨</span>
+          <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-amber-500/50 group-hover:border-amber-400 group-hover:shadow-[0_0_20px_rgba(245,158,11,0.5)] transition-all bg-[#0d0b0e] shrink-0 shadow-md">
+            <Image
+              src="/logo.png"
+              alt="Espresso Patronum Logo"
+              fill
+              sizes="48px"
+              className="object-cover group-hover:scale-110 transition-transform duration-500"
+              priority
+            />
           </div>
           <div>
             <div className="flex items-center gap-2">

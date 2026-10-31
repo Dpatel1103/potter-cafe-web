@@ -40,7 +40,7 @@ export function AssignCourierModal({
                 Dispatch Courier • Order #{order.id}
               </h3>
               <p className="text-[11px] text-purple-300/70">
-                Destination: {order.customer.dormitoryAddress}
+                Destination: {order.customer.address || (order.customer as unknown as { dormitoryAddress?: string }).dormitoryAddress}
               </p>
             </div>
           </div>

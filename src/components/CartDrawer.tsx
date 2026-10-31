@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { useOrder } from "@/context/OrderContext";
-import { PaymentMethod, DeliveryInfo } from "@/types";
+import Image from "next/image";
+import { useCafe } from "@/context/CafeContext";
+import { PaymentMethod, CustomerDetails } from "@/types/cafe";
 import {
   X,
   ShoppingBag,
@@ -12,7 +13,6 @@ import {
   QrCode,
   Banknote,
   Send,
-  AlertCircle,
   Copy,
   Check,
   Sparkles,
@@ -28,17 +28,16 @@ export function CartDrawer() {
     removeFromCart,
     clearCart,
     cartTotal,
-    ministryTax,
     deliveryFee,
     finalTotal,
     placeOrder,
-  } = useOrder();
+  } = useCafe();
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("UPI");
-  const [deliveryInfo, setDeliveryInfo] = useState<DeliveryInfo>({
+  const [deliveryInfo, setDeliveryInfo] = useState<CustomerDetails>({
     fullName: "Harry Potter",
-    phoneNumber: "+91 98765 43210",
-    dormitoryAddress: "Gryffindor Tower, Boy's Dormitory, Hogwarts Castle",
+    phone: "9876543210",
+    address: "Gryffindor Tower, Boy's Dormitory, Hogwarts Castle",
     deliveryNotes: "Leave parcel outside the portrait of the Fat Lady.",
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -55,11 +54,14 @@ export function CartDrawer() {
     if (!deliveryInfo.fullName.trim()) {
       errs.fullName = "Full Name is required";
     }
-    if (!deliveryInfo.phoneNumber.trim()) {
-      errs.phoneNumber = "Phone Number is required";
+
+    const cleanPhone = deliveryInfo.phone.replace(/\D/g, "");
+    if (!cleanPhone || cleanPhone.length < 10) {
+      errs.phone = "Enter a valid 10-digit phone number";
     }
-    if (!deliveryInfo.dormitoryAddress.trim()) {
-      errs.dormitoryAddress = "Delivery Chamber / Address is required";
+
+    if (!deliveryInfo.address.trim()) {
+      errs.address = "Delivery address is required";
     }
     setErrors(errs);
     return Object.keys(errs).length === 0;
@@ -73,9 +75,17 @@ export function CartDrawer() {
 
     setIsSubmitting(true);
     setTimeout(() => {
-      placeOrder(deliveryInfo, paymentMethod);
+      placeOrder({
+        customer: {
+          fullName: deliveryInfo.fullName.trim(),
+          phone: deliveryInfo.phone.trim(),
+          address: deliveryInfo.address.trim(),
+          deliveryNotes: deliveryInfo.deliveryNotes?.trim() || undefined,
+        },
+        paymentMethod,
+      });
       setIsSubmitting(false);
-    }, 400);
+    }, 350);
   };
 
   const handleCopyUpi = () => {
@@ -96,9 +106,15 @@ export function CartDrawer() {
         <div className="w-screen max-w-md bg-[#120e17] border-l border-amber-500/20 shadow-2xl flex flex-col justify-between text-[#f3effa]">
           {/* Header */}
           <div className="px-6 py-4 border-b border-purple-900/40 flex items-center justify-between bg-[#16121b]">
-            <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-400">
-                <ShoppingBag className="w-5 h-5" />
+            <div className="flex items-center gap-3">
+              <div className="relative w-10 h-10 rounded-full overflow-hidden border border-amber-500/40 bg-[#0d0b0e] shrink-0 shadow-md">
+                <Image
+                  src="/logo.png"
+                  alt="Espresso Patronum Logo"
+                  fill
+                  sizes="40px"
+                  className="object-cover"
+                />
               </div>
               <div>
                 <h2 className="font-cinzel text-base font-bold text-amber-100">
@@ -147,7 +163,7 @@ export function CartDrawer() {
                 </div>
                 <button
                   onClick={() => setIsCartOpen(false)}
-                  className="px-4 py-2 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-semibold hover:bg-amber-500/25 transition-colors"
+                  className="px-4 py-2 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-semibold hover:bg-amber-500/25 transition-colors cursor-pointer"
                 >
                   Browse Menu
                 </button>
@@ -158,7 +174,7 @@ export function CartDrawer() {
                   <span>Selected Concoctions</span>
                   <button
                     onClick={clearCart}
-                    className="text-red-400/80 hover:text-red-300 transition-colors flex items-center gap-1 text-[11px]"
+                    className="text-red-400/80 hover:text-red-300 transition-colors flex items-center gap-1 text-[11px] cursor-pointer"
                   >
                     <Trash2 className="w-3 h-3" />
                     Clear All
@@ -197,7 +213,7 @@ export function CartDrawer() {
                         <div className="flex items-center gap-1.5 bg-[#0d0b0e] border border-amber-500/30 rounded px-1 py-0.5">
                           <button
                             onClick={() => updateCartQuantity(item.id, quantity - 1)}
-                            className="p-1 text-purple-300 hover:text-amber-300 transition-colors"
+                            className="p-1 text-purple-300 hover:text-amber-300 transition-colors cursor-pointer"
                             title="Decrease"
                           >
                             <Minus className="w-3 h-3" />
@@ -208,7 +224,7 @@ export function CartDrawer() {
                           <button
                             onClick={() => updateCartQuantity(item.id, quantity + 1)}
                             disabled={isSoldOut}
-                            className={`p-1 text-purple-300 transition-colors ${
+                            className={`p-1 text-purple-300 transition-colors cursor-pointer ${
                               isSoldOut ? "opacity-30 cursor-not-allowed" : "hover:text-amber-300"
                             }`}
                             title="Increase"
@@ -220,7 +236,7 @@ export function CartDrawer() {
                         {/* Remove item button */}
                         <button
                           onClick={() => removeFromCart(item.id)}
-                          className="p-1 text-purple-400/50 hover:text-red-400 transition-colors ml-1"
+                          className="p-1 text-purple-400/50 hover:text-red-400 transition-colors ml-1 cursor-pointer"
                           title="Remove item"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -245,7 +261,7 @@ export function CartDrawer() {
                 <div className="p-4 rounded-xl bg-[#16121b] border border-amber-500/20 space-y-3">
                   <div className="flex items-center gap-2 text-xs font-cinzel font-bold text-amber-200 pb-1 border-b border-purple-900/30">
                     <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                    <span>Owl Post Dispatch Chamber</span>
+                    <span>Delivery Coordinates & Recipient</span>
                   </div>
 
                   {/* Full Name */}
@@ -271,25 +287,26 @@ export function CartDrawer() {
                     )}
                   </div>
 
-                  {/* Phone Number */}
+                  {/* 10-digit Phone Number */}
                   <div>
                     <label className="block text-[11px] font-medium text-purple-200/80 mb-1">
-                      Owl Contact / Phone Number *
+                      10-Digit Phone Number *
                     </label>
                     <input
                       type="tel"
-                      value={deliveryInfo.phoneNumber}
+                      maxLength={10}
+                      value={deliveryInfo.phone}
                       onChange={(e) =>
-                        setDeliveryInfo({ ...deliveryInfo, phoneNumber: e.target.value })
+                        setDeliveryInfo({ ...deliveryInfo, phone: e.target.value })
                       }
-                      placeholder="+91 98765 43210"
+                      placeholder="e.g. 9876543210"
                       className={`w-full px-3 py-1.5 text-xs rounded-md bg-[#0d0b0e] border text-amber-100 placeholder-purple-400/40 focus:outline-none focus:border-amber-400 transition-colors ${
-                        errors.phoneNumber ? "border-red-500" : "border-purple-900/60"
+                        errors.phone ? "border-red-500" : "border-purple-900/60"
                       }`}
                     />
-                    {errors.phoneNumber && (
+                    {errors.phone && (
                       <span className="text-[10px] text-red-400 mt-0.5 block">
-                        {errors.phoneNumber}
+                        {errors.phone}
                       </span>
                     )}
                   </div>
@@ -297,34 +314,34 @@ export function CartDrawer() {
                   {/* Delivery Address */}
                   <div>
                     <label className="block text-[11px] font-medium text-purple-200/80 mb-1">
-                      Delivery Dormitory / Chamber Address *
+                      Delivery Address / Dormitory Chamber *
                     </label>
                     <textarea
                       rows={2}
-                      value={deliveryInfo.dormitoryAddress}
+                      value={deliveryInfo.address}
                       onChange={(e) =>
-                        setDeliveryInfo({ ...deliveryInfo, dormitoryAddress: e.target.value })
+                        setDeliveryInfo({ ...deliveryInfo, address: e.target.value })
                       }
                       placeholder="e.g. Gryffindor Tower, 7th Floor Common Room"
                       className={`w-full px-3 py-1.5 text-xs rounded-md bg-[#0d0b0e] border text-amber-100 placeholder-purple-400/40 focus:outline-none focus:border-amber-400 transition-colors resize-none ${
-                        errors.dormitoryAddress ? "border-red-500" : "border-purple-900/60"
+                        errors.address ? "border-red-500" : "border-purple-900/60"
                       }`}
                     />
-                    {errors.dormitoryAddress && (
+                    {errors.address && (
                       <span className="text-[10px] text-red-400 mt-0.5 block">
-                        {errors.dormitoryAddress}
+                        {errors.address}
                       </span>
                     )}
                   </div>
 
-                  {/* Owl Notes */}
+                  {/* Owl Delivery Notes */}
                   <div>
                     <label className="block text-[11px] font-medium text-purple-200/80 mb-1">
                       Owl Delivery Instructions (Optional)
                     </label>
                     <input
                       type="text"
-                      value={deliveryInfo.deliveryNotes}
+                      value={deliveryInfo.deliveryNotes || ""}
                       onChange={(e) =>
                         setDeliveryInfo({ ...deliveryInfo, deliveryNotes: e.target.value })
                       }
@@ -347,7 +364,7 @@ export function CartDrawer() {
                     <button
                       type="button"
                       onClick={() => setPaymentMethod("UPI")}
-                      className={`p-2.5 rounded-lg border text-left flex flex-col gap-1 transition-all ${
+                      className={`p-2.5 rounded-lg border text-left flex flex-col gap-1 transition-all cursor-pointer ${
                         paymentMethod === "UPI"
                           ? "bg-amber-500/15 border-amber-400 text-amber-200 shadow-[0_0_12px_rgba(245,158,11,0.2)]"
                           : "bg-[#0d0b0e] border-purple-900/50 text-purple-300/70 hover:border-purple-700"
@@ -358,14 +375,14 @@ export function CartDrawer() {
                         <span className="text-xs font-bold">Instant UPI</span>
                       </div>
                       <span className="text-[10px] text-purple-300/60">
-                        Scan QR / Dynamic UPI ID
+                        Scan QR / Dynamic VPA
                       </span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => setPaymentMethod("COD")}
-                      className={`p-2.5 rounded-lg border text-left flex flex-col gap-1 transition-all ${
+                      className={`p-2.5 rounded-lg border text-left flex flex-col gap-1 transition-all cursor-pointer ${
                         paymentMethod === "COD"
                           ? "bg-amber-500/15 border-amber-400 text-amber-200 shadow-[0_0_12px_rgba(245,158,11,0.2)]"
                           : "bg-[#0d0b0e] border-purple-900/50 text-purple-300/70 hover:border-purple-700"
@@ -436,13 +453,14 @@ export function CartDrawer() {
                         </svg>
                       </div>
 
+                      {/* VPA / UPI ID Field */}
                       <div className="flex items-center gap-1.5 text-[11px] font-mono text-amber-300">
-                        <span>UPI ID: espresso.patronum@magicbank</span>
+                        <span>VPA: espresso.patronum@magicbank</span>
                         <button
                           type="button"
                           onClick={handleCopyUpi}
-                          className="p-1 rounded bg-purple-900/40 text-amber-400 hover:text-white transition-colors"
-                          title="Copy UPI ID"
+                          className="p-1 rounded bg-purple-900/40 text-amber-400 hover:text-white transition-colors cursor-pointer"
+                          title="Copy VPA"
                         >
                           {copiedUpi ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
                         </button>
@@ -464,10 +482,6 @@ export function CartDrawer() {
                     <span className="font-mono text-purple-200">₹{cartTotal}</span>
                   </div>
                   <div className="flex justify-between text-purple-300/70">
-                    <span>Ministry of Magic Tax (5%)</span>
-                    <span className="font-mono text-purple-200">₹{ministryTax}</span>
-                  </div>
-                  <div className="flex justify-between text-purple-300/70">
                     <span>Owl Post Courier Fee</span>
                     <span className="font-mono text-purple-200">
                       {deliveryFee === 0 ? (
@@ -478,7 +492,7 @@ export function CartDrawer() {
                     </span>
                   </div>
                   <div className="pt-2 border-t border-purple-900/40 flex justify-between items-center text-sm font-bold text-amber-200">
-                    <span className="font-cinzel">Total Galleons</span>
+                    <span className="font-cinzel">Total Amount</span>
                     <span className="font-mono text-lg text-amber-300">
                       ₹{finalTotal}
                     </span>

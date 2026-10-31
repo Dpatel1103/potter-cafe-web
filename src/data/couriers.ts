@@ -3,7 +3,7 @@ import { Courier } from "@/types";
 export const COURIERS: Courier[] = [
   {
     id: "courier-hedwig",
-    name: "Hedwig",
+    name: "Hedwig Express",
     title: "Snowy Owl • Royal Express",
     speed: "Priority Aerial (10-15 mins)",
     avatarIcon: "owl",

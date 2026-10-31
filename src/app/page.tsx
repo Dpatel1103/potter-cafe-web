@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import Image from "next/image";
 import { useOrder } from "@/context/OrderContext";
 import { MenuCategory } from "@/types";
 import { Navbar } from "@/components/Navbar";
@@ -48,8 +49,8 @@ export default function StorefrontPage() {
       const matchesSearch =
         item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.lore.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (item.badge && item.badge.toLowerCase().includes(searchQuery.toLowerCase()));
+        (Boolean(item.lore) && item.lore!.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (Boolean(item.badge) && item.badge!.toLowerCase().includes(searchQuery.toLowerCase()));
 
       return matchesCategory && matchesSearch;
     });
@@ -75,9 +76,9 @@ export default function StorefrontPage() {
                 </span>
                 <span className="text-purple-200">
                   Status: <strong className="text-amber-300 uppercase">{activeOrder.status}</strong>
-                  {activeOrder.courierName && (
+                  {(activeOrder.courierName || activeOrder.assignedCourier) && (
                     <span className="text-purple-300/80 ml-1.5 hidden md:inline">
-                      (Courier: {activeOrder.courierName})
+                      (Courier: {activeOrder.courierName || activeOrder.assignedCourier})
                     </span>
                   )}
                 </span>
@@ -101,6 +102,25 @@ export default function StorefrontPage() {
           <div className="absolute top-1/2 right-10 w-[350px] h-[350px] bg-purple-900/15 blur-[120px] pointer-events-none rounded-full" />
 
           <div className="max-w-4xl mx-auto text-center space-y-5 relative z-10">
+            {/* Centerpiece Crest Emblem */}
+            <div className="flex justify-center">
+              <div className="relative group cursor-pointer">
+                <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-amber-500/40 via-cyan-500/30 to-amber-400/50 blur-lg opacity-75 group-hover:opacity-100 transition duration-700 animate-pulse" />
+                <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full p-1 bg-gradient-to-b from-amber-400/50 via-purple-900/40 to-amber-600/30 border border-amber-400/50 shadow-[0_0_25px_rgba(245,158,11,0.3)]">
+                  <div className="relative w-full h-full rounded-full overflow-hidden bg-[#0d0b0e]">
+                    <Image
+                      src="/logo.png"
+                      alt="Espresso Patronum Official Crest"
+                      fill
+                      sizes="(max-width: 640px) 128px, 160px"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      priority
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Pill Badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold tracking-wider uppercase">
               <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" />

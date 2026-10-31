@@ -1,21 +1,19 @@
 "use client";
 
 import React from "react";
-import { useOrder } from "@/context/OrderContext";
-import { OrderStatus } from "@/types";
+import Image from "next/image";
+import { useCafe } from "@/context/CafeContext";
+import { OrderStatus } from "@/types/cafe";
 import {
   X,
   Sparkles,
   CheckCircle,
   Flame,
-  Truck,
   CheckCircle2,
   Clock,
   MapPin,
-  Phone,
   Feather,
   ShoppingBag,
-  ExternalLink,
 } from "lucide-react";
 
 const STEPS: { status: OrderStatus; label: string; icon: string; desc: string }[] = [
@@ -67,8 +65,7 @@ export function OrderTracker() {
     setIsTrackerOpen,
     orders,
     setActiveOrderId,
-    isCloudSyncActive,
-  } = useOrder();
+  } = useCafe();
 
   if (!isTrackerOpen) return null;
 
@@ -83,11 +80,11 @@ export function OrderTracker() {
         <div className="relative w-full max-w-lg bg-[#120e17] border border-amber-500/30 rounded-2xl p-6 shadow-2xl text-[#f3effa]">
           <div className="flex items-center justify-between pb-4 border-b border-purple-900/40">
             <h3 className="font-cinzel text-lg font-bold text-amber-200">
-              Order Tracker
+              Live Marauder&apos;s Tracker
             </h3>
             <button
               onClick={() => setIsTrackerOpen(false)}
-              className="p-1 rounded text-purple-300 hover:text-white"
+              className="p-1 rounded text-purple-300 hover:text-white cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -105,7 +102,7 @@ export function OrderTracker() {
                     <button
                       key={o.id}
                       onClick={() => setActiveOrderId(o.id)}
-                      className="w-full flex items-center justify-between p-3 rounded-lg bg-[#16121b] border border-purple-900/50 hover:border-amber-500/50 transition-colors text-xs"
+                      className="w-full flex items-center justify-between p-3 rounded-lg bg-[#16121b] border border-purple-900/50 hover:border-amber-500/50 transition-colors text-xs cursor-pointer"
                     >
                       <div>
                         <span className="font-mono font-bold text-amber-300">#{o.id}</span>
@@ -126,8 +123,10 @@ export function OrderTracker() {
   }
 
   const currentStepIdx = STATUS_INDEX[activeOrder.status] ?? 0;
+  const courier = activeOrder.assignedCourier || (activeOrder as unknown as { courierName?: string }).courierName;
+  const customerPhone = activeOrder.customer.phone || (activeOrder.customer as unknown as { phoneNumber?: string }).phoneNumber;
+  const customerAddress = activeOrder.customer.address || (activeOrder.customer as unknown as { dormitoryAddress?: string }).dormitoryAddress;
 
-  // Render Step Icon
   const renderStepIcon = (icon: string, isCurrent: boolean, isPassed: boolean) => {
     if (isPassed) {
       return <CheckCircle2 className="w-4 h-4 text-emerald-400" />;
@@ -160,8 +159,14 @@ export function OrderTracker() {
         {/* Top Header */}
         <div className="px-6 py-4 bg-[#16121b] border-b border-amber-500/20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-400">
-              <Clock className="w-5 h-5 animate-pulse" />
+            <div className="relative w-11 h-11 rounded-full overflow-hidden border border-amber-500/40 bg-[#0d0b0e] shrink-0 shadow-md">
+              <Image
+                src="/logo.png"
+                alt="Espresso Patronum Logo"
+                fill
+                sizes="44px"
+                className="object-cover"
+              />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -180,7 +185,7 @@ export function OrderTracker() {
 
           <button
             onClick={() => setIsTrackerOpen(false)}
-            className="p-1.5 rounded-lg text-purple-300/70 hover:text-amber-300 hover:bg-purple-900/40 transition-colors"
+            className="p-1.5 rounded-lg text-purple-300/70 hover:text-amber-300 hover:bg-purple-900/40 transition-colors cursor-pointer"
             title="Close Tracker"
           >
             <X className="w-5 h-5" />
@@ -206,13 +211,13 @@ export function OrderTracker() {
               <p className="text-sm font-medium leading-relaxed">
                 {activeOrder.statusMessage ||
                   (activeOrder.status === "Placed" &&
-                    "Your order has been placed. Waiting for the Baristas to acknowledge your ticket.") ||
+                    "Your order has been placed. Waiting for barista confirmation in the Great Hall.") ||
                   (activeOrder.status === "Accepted" &&
-                    "Your order has been accepted! Queued at the brewing station.") ||
+                    "Your order has been accepted! Queued at brewing station.") ||
                   (activeOrder.status === "Brewing" &&
-                    "Master Barista is simmering your magical concoction in the Great Hearth.") ||
+                    "Master Barista is simmering your magical brew in the Great Hearth.") ||
                   (activeOrder.status === "Out for Delivery" &&
-                    `Your order is out for delivery with ${activeOrder.courierName || "Hedwig"}! Keep your windowsill clear.`) ||
+                    `Your order is out for delivery with ${courier || "Hedwig Express"}! Keep your windowsill clear.`) ||
                   "Your order has been delivered safely. May your brews be potent!"}
               </p>
             </div>
@@ -226,7 +231,7 @@ export function OrderTracker() {
                 <div
                   className="h-full bg-gradient-to-r from-amber-500 via-amber-400 to-emerald-400 transition-all duration-700 ease-out"
                   style={{
-                    width: `${(currentStepIdx / (STEPS.length - 1)) * 100}%`,
+                    width: `${Math.max(0, (currentStepIdx / (STEPS.length - 1)) * 100)}%`,
                   }}
                 />
               </div>
@@ -236,7 +241,6 @@ export function OrderTracker() {
                 {STEPS.map((step, idx) => {
                   const isCurrent = idx === currentStepIdx;
                   const isPassed = idx < currentStepIdx;
-                  const isUpcoming = idx > currentStepIdx;
 
                   return (
                     <div
@@ -277,7 +281,7 @@ export function OrderTracker() {
           </div>
 
           {/* Assigned Courier Profile Card if dispatched */}
-          {activeOrder.courierName && (
+          {courier && (
             <div className="p-4 rounded-xl bg-gradient-to-r from-amber-950/30 via-[#16121b] to-purple-950/30 border border-amber-500/30 flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-xl bg-amber-500/15 border border-amber-400/40 flex items-center justify-center text-amber-300 text-xl shadow-inner">
@@ -288,10 +292,10 @@ export function OrderTracker() {
                     Dispatched Courier
                   </span>
                   <h4 className="font-cinzel text-base font-bold text-amber-100">
-                    {activeOrder.courierName}
+                    {courier}
                   </h4>
                   <p className="text-xs text-purple-300/70">
-                    In flight to your chamber window • Keep parchment ready
+                    Airborne to your window • Keep your windowsill clear
                   </p>
                 </div>
               </div>
@@ -315,11 +319,11 @@ export function OrderTracker() {
               </div>
               <div>
                 <span className="text-purple-300/60 block text-[10px]">Contact</span>
-                <span className="font-mono text-purple-200">{activeOrder.customer.phoneNumber}</span>
+                <span className="font-mono text-purple-200">{customerPhone}</span>
               </div>
               <div>
                 <span className="text-purple-300/60 block text-[10px]">Address</span>
-                <span className="text-purple-200">{activeOrder.customer.dormitoryAddress}</span>
+                <span className="text-purple-200">{customerAddress}</span>
               </div>
               {activeOrder.customer.deliveryNotes && (
                 <div>
@@ -342,66 +346,52 @@ export function OrderTracker() {
               </div>
 
               <div className="space-y-1.5 max-h-32 overflow-y-auto pr-1">
-                {activeOrder.items.map((ci) => (
-                  <div key={ci.item.id} className="flex justify-between items-center text-[11px]">
-                    <span className="text-purple-200">
-                      {ci.item.name}{" "}
-                      <span className="text-amber-400/80 font-mono">× {ci.quantity}</span>
-                    </span>
-                    <span className="font-mono font-medium text-amber-300">
-                      ₹{ci.item.price * ci.quantity}
-                    </span>
-                  </div>
-                ))}
+                {activeOrder.items.map((ci, idx) => {
+                  const itemName =
+                    ci.name ||
+                    (ci as unknown as { item?: { name: string } }).item?.name ||
+                    "Potion Brew";
+                  const itemPrice =
+                    ci.unitPrice ??
+                    (ci as unknown as { item?: { price: number } }).item?.price ??
+                    0;
+                  const lineTotal =
+                    ci.lineTotal ?? itemPrice * ci.quantity;
+
+                  return (
+                    <div key={ci.menuItemId || idx} className="flex justify-between items-center text-[11px]">
+                      <span className="text-purple-200">
+                        {itemName}{" "}
+                        <span className="text-amber-400/80 font-mono">× {ci.quantity}</span>
+                      </span>
+                      <span className="font-mono font-medium text-amber-300">
+                        ₹{lineTotal}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
 
               <div className="pt-2 border-t border-purple-900/30 flex justify-between items-center text-xs font-bold text-amber-200">
-                <span>Total Amount Paid</span>
+                <span>Total Amount</span>
                 <span className="font-mono text-sm text-amber-300">
                   ₹{activeOrder.total}
                 </span>
               </div>
             </div>
           </div>
-
-          {/* Order Event Timeline */}
-          {activeOrder.history && activeOrder.history.length > 0 && (
-            <div className="p-4 rounded-xl bg-[#0d0b0e] border border-purple-900/40 space-y-2 text-xs">
-              <span className="font-cinzel text-xs font-bold text-amber-300/80 block pb-1 border-b border-purple-900/30">
-                Marauder&apos;s Dispatch Log
-              </span>
-              <div className="space-y-2 pt-1">
-                {activeOrder.history.map((ev, i) => (
-                  <div key={i} className="flex items-start gap-2 text-[11px]">
-                    <span className="font-mono text-purple-400/70 shrink-0 min-w-[65px]">
-                      {ev.timestamp}
-                    </span>
-                    <div className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5 shrink-0" />
-                    <div>
-                      <span className="font-bold text-amber-200 mr-1.5">{ev.status}:</span>
-                      <span className="text-purple-300/80">{ev.note}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Modal Footer */}
         <div className="px-6 py-4 bg-[#16121b] border-t border-purple-900/40 flex items-center justify-between">
           <div className="flex items-center gap-1.5 text-[11px] text-emerald-400">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-            <span>
-              {isCloudSyncActive
-                ? "Live Supabase Cloud Sync Active"
-                : "Live Multi-Tab Broadcast Active"}
-            </span>
+            <span>Live Multi-Tab Reactive Sync Active</span>
           </div>
 
           <button
             onClick={() => setIsTrackerOpen(false)}
-            className="px-4 py-2 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:bg-amber-500/25 text-xs font-semibold transition-colors"
+            className="px-4 py-2 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:bg-amber-500/25 text-xs font-semibold transition-colors cursor-pointer"
           >
             Return to Great Hall Menu
           </button>

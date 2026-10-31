@@ -131,10 +131,10 @@ export function MenuCard({ item }: MenuCardProps) {
           {!item.inStock ? (
             <button
               disabled
-              className="px-3.5 py-1.5 rounded-lg bg-zinc-800 text-zinc-500 text-xs font-semibold cursor-not-allowed border border-zinc-700/50 flex items-center gap-1.5"
+              className="px-3.5 py-1.5 rounded-lg bg-amber-950/40 text-amber-400 text-xs font-semibold cursor-not-allowed border border-amber-500/40 flex items-center gap-1.5 shadow-sm"
             >
-              <AlertCircle className="w-3.5 h-3.5" />
-              Sold Out
+              <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
+              <span>Sold Out</span>
             </button>
           ) : quantity > 0 ? (
             <div className="flex items-center gap-2 bg-[#0d0b0e] border border-amber-500/40 rounded-lg p-1">

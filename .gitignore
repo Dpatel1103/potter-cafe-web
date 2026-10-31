@@ -30,9 +30,29 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (prevent secret leaks)
+# env files & cloud credentials (prevent secret leaks)
 .env*
 !.env.example
+*service-account*.json
+*credentials*.json
+*.key
+*.p12
+
+# ai agent & tool metadata
+.agents/
+.claude/
+.autohand/
+skills-lock.json
+
+# ide & editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# os files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
 
 # vercel
 .vercel

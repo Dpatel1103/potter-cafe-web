@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Cinzel, Cinzel_Decorative, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
-import { OrderProvider } from "@/context/OrderContext";
+import { CafeProvider } from "@/context/CafeContext";
 import { MagicCanvas } from "@/components/MagicCanvas";
 
 const cinzel = Cinzel({
@@ -29,6 +29,11 @@ export const metadata: Metadata = {
   title: "Espresso Patronum | The Wizarding Cafe of Diagon Alley",
   description:
     "Purveyors of fine artisan brews, glowing signature potions, and magical pastries. Order via Owl Post or UPI with live order tracking.",
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
   keywords: [
     "Espresso Patronum",
     "Harry Potter Cafe",
@@ -47,15 +52,19 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${cinzel.variable} ${cinzelDecorative.variable} ${plusJakartaSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#0d0b0e] text-[#f3effa] relative selection:bg-amber-500/30 selection:text-amber-200">
+      <body
+        suppressHydrationWarning
+        className="min-h-full flex flex-col bg-[#0d0b0e] text-[#f3effa] relative selection:bg-amber-500/30 selection:text-amber-200"
+      >
         <MagicCanvas />
-        <OrderProvider>
+        <CafeProvider>
           <div className="relative z-10 flex flex-col min-h-screen">
             {children}
           </div>
-        </OrderProvider>
+        </CafeProvider>
       </body>
     </html>
   );
