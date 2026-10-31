@@ -75,7 +75,7 @@ export function MenuManager() {
         selectedCategory === "All" || item.category === selectedCategory;
       const matchSearch =
         item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item.description || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.category.toLowerCase().includes(searchQuery.toLowerCase());
       return matchCat && matchSearch;
     });
@@ -102,10 +102,10 @@ export function MenuManager() {
     setEditingItem(item);
     setFormData({
       name: item.name,
-      category: item.category,
-      description: item.description,
+      category: item.category as MenuCategory,
+      description: item.description || "",
       price: String(item.price),
-      inStock: item.inStock,
+      inStock: item.in_stock ?? item.inStock ?? true,
       lore: item.lore || "",
       badge: item.badge || "",
     });
@@ -144,7 +144,9 @@ export function MenuManager() {
         category: formData.category,
         description: formData.description.trim(),
         price: priceNum,
+        in_stock: formData.inStock,
         inStock: formData.inStock,
+        image_url: null,
         lore: formData.lore.trim() || undefined,
         badge: formData.badge.trim() || undefined,
       });
@@ -155,7 +157,9 @@ export function MenuManager() {
         category: formData.category,
         description: formData.description.trim(),
         price: priceNum,
+        in_stock: formData.inStock,
         inStock: formData.inStock,
+        image_url: null,
         lore: formData.lore.trim() || undefined,
         badge: formData.badge.trim() || undefined,
         iconType:

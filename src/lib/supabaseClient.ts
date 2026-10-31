@@ -1,45 +1,70 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { DbMenuItem, DbOrder, OrderStatus } from "@/types";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const rawSupabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const rawSupabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const rawServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 /**
  * Validates whether the Supabase environment variables are properly defined
  * and do not contain placeholder or dummy strings.
  */
 export const isSupabaseConfigured = Boolean(
-  supabaseUrl &&
-    supabaseAnonKey &&
-    supabaseUrl.startsWith("https://") &&
-    !supabaseUrl.includes("your-project-ref") &&
-    !supabaseAnonKey.includes("your-anon-key-placeholder")
+  rawSupabaseUrl &&
+    rawSupabaseAnonKey &&
+    rawSupabaseUrl.startsWith("https://") &&
+    !rawSupabaseUrl.includes("your-project-ref") &&
+    !rawSupabaseAnonKey.includes("your-anon-key-placeholder")
 );
 
 // Fallback dummy credentials to satisfy createClient initialization during local/build phase
 const fallbackUrl = "https://placeholder-espresso-patronum.supabase.co";
 const fallbackAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder";
 
-/**
- * Initialized browser Supabase client with Realtime replication enabled.
- */
-export const supabase = createClient(
-  isSupabaseConfigured ? (supabaseUrl as string) : fallbackUrl,
-  isSupabaseConfigured ? (supabaseAnonKey as string) : fallbackAnonKey,
-  {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-    },
-    realtime: {
-      params: {
-        eventsPerSecond: 10,
-      },
-    },
-  }
-);
+const activeUrl = isSupabaseConfigured ? (rawSupabaseUrl as string) : fallbackUrl;
+const activeAnonKey = isSupabaseConfigured ? (rawSupabaseAnonKey as string) : fallbackAnonKey;
 
-// ── Database Helper Utilities ────────────────────────────────────────────────
+/**
+ * Standard browser / client-safe Supabase client.
+ * Uses NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.
+ * Safe for client-side components and public operations governed by Row Level Security (RLS).
+ */
+export const supabase: SupabaseClient = createClient(activeUrl, activeAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+  },
+  realtime: {
+    params: {
+      eventsPerSecond: 10,
+    },
+  },
+});
+
+/**
+ * Privileged Admin / Service-Role Supabase client.
+ * Initialized only when SUPABASE_SERVICE_ROLE_KEY is present in server environment.
+ * Strictly used inside server Route Handlers for elevated operations bypassing RLS.
+ */
+export const supabaseAdmin: SupabaseClient | null =
+  rawServiceRoleKey && isSupabaseConfigured
+    ? createClient(activeUrl, rawServiceRoleKey, {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+        },
+      })
+    : null;
+
+/**
+ * Helper to obtain the authoritative Supabase client for Server Route Handlers:
+ * Uses privileged supabaseAdmin if service role key is present; otherwise falls back to standard client.
+ */
+export function getServerSupabase(): SupabaseClient {
+  return supabaseAdmin || supabase;
+}
+
+// ── Database Helper Utilities (Maintained for UI & Context backwards compatibility) ──
 
 /**
  * Fetch all menu items from Supabase with graceful fallback
@@ -57,7 +82,7 @@ export async function fetchDbMenuItems(): Promise<DbMenuItem[] | null> {
       console.warn("Supabase fetchDbMenuItems warning:", error.message);
       return null;
     }
-    return (data as unknown) as DbMenuItem[];
+    return data as unknown as DbMenuItem[];
   } catch (err) {
     console.warn("Supabase fetchDbMenuItems exception:", err);
     return null;
@@ -68,16 +93,18 @@ export async function fetchDbMenuItems(): Promise<DbMenuItem[] | null> {
  * Update stock availability for a specific menu item in Supabase
  */
 export async function updateDbItemStock(
-  itemId: string,
+  itemId: string | number,
   isAvailable: boolean
 ): Promise<boolean> {
   if (!isSupabaseConfigured) return false;
 
   try {
-    const { error } = await supabase
+    const client = getServerSupabase();
+    const { error } = await client
       .from("menu_items")
       .update({
         is_available: isAvailable,
+        in_stock: isAvailable,
         updated_at: new Date().toISOString(),
       })
       .eq("id", itemId);
@@ -100,7 +127,8 @@ export async function fetchDbOrders(): Promise<DbOrder[] | null> {
   if (!isSupabaseConfigured) return null;
 
   try {
-    const { data, error } = await supabase
+    const client = getServerSupabase();
+    const { data, error } = await client
       .from("orders")
       .select("*")
       .order("created_at", { ascending: false });
@@ -109,7 +137,7 @@ export async function fetchDbOrders(): Promise<DbOrder[] | null> {
       console.warn("Supabase fetchDbOrders warning:", error.message);
       return null;
     }
-    return (data as unknown) as DbOrder[];
+    return data as unknown as DbOrder[];
   } catch (err) {
     console.warn("Supabase fetchDbOrders exception:", err);
     return null;
@@ -119,11 +147,12 @@ export async function fetchDbOrders(): Promise<DbOrder[] | null> {
 /**
  * Insert a newly placed order into the Supabase database
  */
-export async function insertDbOrder(order: DbOrder): Promise<boolean> {
+export async function insertDbOrder(order: Record<string, any>): Promise<boolean> {
   if (!isSupabaseConfigured) return false;
 
   try {
-    const { error } = await supabase.from("orders").insert(order);
+    const client = getServerSupabase();
+    const { error } = await client.from("orders").insert(order);
 
     if (error) {
       console.warn("Supabase insertDbOrder error:", error.message);
@@ -140,23 +169,26 @@ export async function insertDbOrder(order: DbOrder): Promise<boolean> {
  * Update an order's lifecycle status and assigned courier in Supabase
  */
 export async function updateDbOrderStatus(
-  orderId: string,
+  orderId: string | number,
   status: OrderStatus,
   courierName?: string | null
 ): Promise<boolean> {
   if (!isSupabaseConfigured) return false;
 
   try {
+    const client = getServerSupabase();
     const updatePayload: Record<string, unknown> = {
       status,
+      order_status: status,
       updated_at: new Date().toISOString(),
     };
 
     if (courierName !== undefined) {
       updatePayload.courier_name = courierName;
+      updatePayload.assigned_rider = courierName;
     }
 
-    const { error } = await supabase
+    const { error } = await client
       .from("orders")
       .update(updatePayload)
       .eq("id", orderId);

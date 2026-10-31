@@ -24,9 +24,9 @@ interface CafeContextType {
   // Menu items and CRUD actions
   menuItems: MenuItem[];
   addMenuItem: (item: Omit<MenuItem, "id">) => MenuItem;
-  updateMenuItem: (id: string, updatedFields: Partial<MenuItem>) => void;
-  deleteMenuItem: (id: string) => void;
-  toggleStockStatus: (id: string) => void;
+  updateMenuItem: (id: string | number, updatedFields: Partial<MenuItem>) => void;
+  deleteMenuItem: (id: string | number) => void;
+  toggleStockStatus: (id: string | number) => void;
   restockAllItems: () => void;
 
   // Cart state & actions
@@ -36,8 +36,8 @@ interface CafeContextType {
   deliveryFee: number;
   finalTotal: number;
   addToCart: (item: MenuItem) => void;
-  updateCartQuantity: (itemId: string, quantity: number) => void;
-  removeFromCart: (itemId: string) => void;
+  updateCartQuantity: (itemId: string | number, quantity: number) => void;
+  removeFromCart: (itemId: string | number) => void;
   clearCart: () => void;
   isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
@@ -45,25 +45,25 @@ interface CafeContextType {
   // Order lifecycle & tracking
   orders: Order[];
   activeOrder: Order | null;
-  activeOrderId: string | null;
-  setActiveOrderId: (id: string | null) => void;
+  activeOrderId: string | number | null;
+  setActiveOrderId: (id: string | number | null) => void;
   isTrackerOpen: boolean;
   setIsTrackerOpen: (open: boolean) => void;
   placeOrder: (orderData: {
     customer: CustomerDetails;
     paymentMethod: PaymentMethod;
-  }) => string;
+  }) => number;
   updateOrderStatus: (
-    orderId: string,
+    orderId: string | number,
     status: OrderStatus,
     courier?: string
   ) => void;
 
   // Convenience aliases for staff actions
-  acceptOrder: (orderId: string) => void;
-  startBrewingOrder: (orderId: string) => void;
-  assignCourier: (orderId: string, courierName: string) => void;
-  markOrderDelivered: (orderId: string) => void;
+  acceptOrder: (orderId: string | number) => void;
+  startBrewingOrder: (orderId: string | number) => void;
+  assignCourier: (orderId: string | number, courierName: string) => void;
+  markOrderDelivered: (orderId: string | number) => void;
 
   // System & demo utilities
   soundEnabled: boolean;
@@ -82,103 +82,145 @@ const STORAGE_KEY_SOUND = "espresso_patronum_sound_v2";
 
 const DEFAULT_SAMPLE_ORDERS: Order[] = [
   {
-    id: "ORD-1042",
+    id: 1042,
+    created_at: "2026-10-25T13:45:00.000Z",
     createdAt: "2026-10-25T13:45:00.000Z",
+    customer_name: "Hermione Granger",
     customer: {
       fullName: "Hermione Granger",
       phone: "9820012345",
       address: "Gryffindor Tower, 7th Floor Common Room, Hogwarts",
       deliveryNotes: "Leave discreetly beside the tapestry of Barnabas the Barmy.",
     },
+    phone: "9820012345",
+    delivery_address: "Gryffindor Tower, 7th Floor Common Room, Hogwarts",
+    items_summary: "Butterscotch Cold Brew (x2), Golden Snitch Macaron (x1)",
     items: [
       {
-        menuItemId: "item-butterscotch-cold-brew",
+        menuItemId: 1,
         name: "Butterscotch Cold Brew",
         quantity: 2,
         unitPrice: 280,
+        unit_price: 280,
         lineTotal: 560,
+        line_total: 560,
       },
       {
-        menuItemId: "item-golden-snitch-macaron",
+        menuItemId: 8,
         name: "Golden Snitch Macaron",
         quantity: 1,
         unitPrice: 180,
+        unit_price: 180,
         lineTotal: 180,
+        line_total: 180,
       },
     ],
     subtotal: 740,
-    deliveryFee: 0,
+    delivery_fee: 0,
+    total_amount: 740,
     total: 740,
+    payment_method: "UPI",
     paymentMethod: "UPI",
+    payment_status: "Completed",
     paymentStatus: "Completed",
+    order_status: "Delivered",
     status: "Delivered",
+    assigned_rider: "Hedwig Express",
     assignedCourier: "Hedwig Express",
     statusMessage: "Your order has been delivered safely by Hedwig Express.",
   },
   {
-    id: "ORD-1088",
+    id: 1088,
+    created_at: "2026-10-25T14:05:00.000Z",
     createdAt: "2026-10-25T14:05:00.000Z",
+    customer_name: "Ron Weasley",
     customer: {
       fullName: "Ron Weasley",
       phone: "9845067890",
       address: "The Burrow, Ottery St Catchpole, Attic Room",
       deliveryNotes: "Mind the family ghoul when tapping on the chimney roof.",
     },
+    phone: "9845067890",
+    delivery_address: "The Burrow, Ottery St Catchpole, Attic Room",
+    items_summary: "Cauldron Hand Pie (x2), Dark Mark Espresso (x1)",
     items: [
       {
-        menuItemId: "item-cauldron-hand-pie",
+        menuItemId: 6,
         name: "Cauldron Hand Pie",
         quantity: 2,
         unitPrice: 240,
+        unit_price: 240,
         lineTotal: 480,
+        line_total: 480,
       },
       {
-        menuItemId: "item-dark-mark-espresso",
+        menuItemId: 4,
         name: "Dark Mark Espresso",
         quantity: 1,
         unitPrice: 190,
+        unit_price: 190,
         lineTotal: 190,
+        line_total: 190,
       },
     ],
     subtotal: 670,
-    deliveryFee: 0,
+    delivery_fee: 0,
+    total_amount: 670,
     total: 670,
+    payment_method: "COD",
     paymentMethod: "COD",
+    payment_status: "Pending",
     paymentStatus: "Pending",
+    order_status: "Brewing",
     status: "Brewing",
+    assigned_rider: null,
     statusMessage: "Your order is simmering in the apothecary cauldrons.",
   },
   {
-    id: "ORD-1104",
+    id: 1104,
+    created_at: "2026-10-25T14:15:00.000Z",
     createdAt: "2026-10-25T14:15:00.000Z",
+    customer_name: "Luna Lovegood",
     customer: {
       fullName: "Luna Lovegood",
       phone: "9811054321",
       address: "Ravenclaw Tower, West Wing Window Seat",
       deliveryNotes: "Look for the radishes hanging beside the blue silk curtains.",
     },
+    phone: "9811054321",
+    delivery_address: "Ravenclaw Tower, West Wing Window Seat",
+    items_summary: "Liquid Luck Latte (x1), Pumpkin Pasties (x1)",
     items: [
       {
-        menuItemId: "item-liquid-luck-latte",
+        menuItemId: 3,
         name: "Liquid Luck Latte",
         quantity: 1,
         unitPrice: 320,
+        unit_price: 320,
         lineTotal: 320,
+        line_total: 320,
       },
       {
-        menuItemId: "item-pumpkin-pasties",
+        menuItemId: 7,
         name: "Pumpkin Pasties",
         quantity: 1,
         unitPrice: 210,
+        unit_price: 210,
         lineTotal: 210,
+        line_total: 210,
       },
     ],
     subtotal: 530,
-    deliveryFee: 0,
+    delivery_fee: 0,
+    total_amount: 530,
     total: 530,
+    payment_method: "UPI",
     paymentMethod: "UPI",
+    payment_status: "Pending",
     paymentStatus: "Pending",
+    order_status: "Placed",
     status: "Placed",
+    assigned_rider: null,
     statusMessage: "Your order has been received in the Great Hall queue.",
   },
 ];
@@ -187,7 +229,7 @@ export function CafeProvider({ children }: { children: React.ReactNode }) {
   const [menuItems, setMenuItems] = useState<MenuItem[]>(INITIAL_MENU_ITEMS);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [orders, setOrders] = useState<Order[]>(DEFAULT_SAMPLE_ORDERS);
-  const [activeOrderId, setActiveOrderIdState] = useState<string | null>(null);
+  const [activeOrderId, setActiveOrderIdState] = useState<string | number | null>(null);
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const [isTrackerOpen, setIsTrackerOpen] = useState<boolean>(false);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
@@ -317,8 +359,8 @@ export function CafeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!isHydrated || typeof window === "undefined") return;
     try {
-      if (activeOrderId) {
-        localStorage.setItem(STORAGE_KEY_ACTIVE_ORDER, activeOrderId);
+      if (activeOrderId !== null && activeOrderId !== undefined) {
+        localStorage.setItem(STORAGE_KEY_ACTIVE_ORDER, String(activeOrderId));
       } else {
         localStorage.removeItem(STORAGE_KEY_ACTIVE_ORDER);
       }
@@ -330,14 +372,18 @@ export function CafeProvider({ children }: { children: React.ReactNode }) {
   // Sync cart item stock status with menuItems
   useEffect(() => {
     if (!menuItems.length || !cart.length) return;
-    const stockMap = new Map(menuItems.map((m) => [m.id, m.inStock]));
+    const stockMap = new Map(menuItems.map((m) => [m.id, m.in_stock ?? m.inStock]));
     setCart((prevCart) =>
       prevCart.map((cartItem) => {
         const isStillInStock = stockMap.get(cartItem.item.id) ?? true;
         if (cartItem.item.inStock !== isStillInStock) {
           return {
             ...cartItem,
-            item: { ...cartItem.item, inStock: isStillInStock },
+            item: {
+              ...cartItem.item,
+              in_stock: isStillInStock,
+              inStock: isStillInStock,
+            },
           };
         }
         return cartItem;
@@ -347,8 +393,8 @@ export function CafeProvider({ children }: { children: React.ReactNode }) {
 
   // Derived Active Order
   const activeOrder = useMemo(() => {
-    if (!activeOrderId) return null;
-    return orders.find((o) => o.id === activeOrderId) || null;
+    if (activeOrderId === null || activeOrderId === undefined) return null;
+    return orders.find((o) => String(o.id) === String(activeOrderId)) || null;
   }, [orders, activeOrderId]);
 
   // Totals calculations
@@ -373,13 +419,18 @@ export function CafeProvider({ children }: { children: React.ReactNode }) {
 
   const addMenuItem = useCallback(
     (itemData: Omit<MenuItem, "id">): MenuItem => {
-      const generatedId = `item-${itemData.name
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")}-${Date.now()}`;
+      const maxId = menuItems.reduce(
+        (max, m) => Math.max(max, typeof m.id === "number" ? m.id : 0),
+        0
+      );
+      const newId = maxId + 1;
 
       const newItem: MenuItem = {
         ...itemData,
-        id: generatedId,
+        id: newId,
+        in_stock: itemData.in_stock ?? itemData.inStock ?? true,
+        inStock: itemData.inStock ?? itemData.in_stock ?? true,
+        image_url: itemData.image_url ?? null,
       };
 
       const updatedMenu = [newItem, ...menuItems];
@@ -392,9 +443,16 @@ export function CafeProvider({ children }: { children: React.ReactNode }) {
   );
 
   const updateMenuItem = useCallback(
-    (id: string, updatedFields: Partial<MenuItem>) => {
+    (id: string | number, updatedFields: Partial<MenuItem>) => {
       const updatedMenu = menuItems.map((item) =>
-        item.id === id ? { ...item, ...updatedFields } : item
+        String(item.id) === String(id)
+          ? {
+              ...item,
+              ...updatedFields,
+              in_stock: updatedFields.in_stock ?? updatedFields.inStock ?? item.in_stock,
+              inStock: updatedFields.inStock ?? updatedFields.in_stock ?? item.inStock,
+            }
+          : item
       );
       setMenuItems(updatedMenu);
       persistAndBroadcast(updatedMenu, orders);
@@ -404,11 +462,11 @@ export function CafeProvider({ children }: { children: React.ReactNode }) {
   );
 
   const deleteMenuItem = useCallback(
-    (id: string) => {
-      const updatedMenu = menuItems.filter((item) => item.id !== id);
+    (id: string | number) => {
+      const updatedMenu = menuItems.filter((item) => String(item.id) !== String(id));
       setMenuItems(updatedMenu);
       // Also remove deleted item from cart
-      setCart((prev) => prev.filter((ci) => ci.item.id !== id));
+      setCart((prev) => prev.filter((ci) => String(ci.item.id) !== String(id)));
       persistAndBroadcast(updatedMenu, orders);
       soundEffects.playWandClick();
     },
@@ -416,10 +474,18 @@ export function CafeProvider({ children }: { children: React.ReactNode }) {
   );
 
   const toggleStockStatus = useCallback(
-    (id: string) => {
-      const updatedMenu = menuItems.map((item) =>
-        item.id === id ? { ...item, inStock: !item.inStock } : item
-      );
+    (id: string | number) => {
+      const updatedMenu = menuItems.map((item) => {
+        if (String(item.id) === String(id)) {
+          const nextVal = !(item.in_stock ?? item.inStock);
+          return {
+            ...item,
+            in_stock: nextVal,
+            inStock: nextVal,
+          };
+        }
+        return item;
+      });
       setMenuItems(updatedMenu);
       persistAndBroadcast(updatedMenu, orders);
       soundEffects.playWandClick();
@@ -428,7 +494,11 @@ export function CafeProvider({ children }: { children: React.ReactNode }) {
   );
 
   const restockAllItems = useCallback(() => {
-    const updatedMenu = menuItems.map((item) => ({ ...item, inStock: true }));
+    const updatedMenu = menuItems.map((item) => ({
+      ...item,
+      in_stock: true,
+      inStock: true,
+    }));
     setMenuItems(updatedMenu);
     persistAndBroadcast(updatedMenu, orders);
     soundEffects.playStaffChime();
@@ -438,15 +508,15 @@ export function CafeProvider({ children }: { children: React.ReactNode }) {
 
   const addToCart = useCallback(
     (item: MenuItem) => {
-      const latest = menuItems.find((m) => m.id === item.id) || item;
-      if (!latest.inStock) return;
+      const latest = menuItems.find((m) => String(m.id) === String(item.id)) || item;
+      if (!(latest.in_stock ?? latest.inStock)) return;
 
       soundEffects.playAddToCart();
       setCart((prevCart) => {
-        const existing = prevCart.find((ci) => ci.item.id === latest.id);
+        const existing = prevCart.find((ci) => String(ci.item.id) === String(latest.id));
         if (existing) {
           return prevCart.map((ci) =>
-            ci.item.id === latest.id
+            String(ci.item.id) === String(latest.id)
               ? { ...ci, quantity: ci.quantity + 1 }
               : ci
           );
@@ -457,27 +527,27 @@ export function CafeProvider({ children }: { children: React.ReactNode }) {
     [menuItems]
   );
 
-  const updateCartQuantity = useCallback((itemId: string, quantity: number) => {
+  const updateCartQuantity = useCallback((itemId: string | number, quantity: number) => {
     soundEffects.playWandClick();
     if (quantity <= 0) {
-      setCart((prev) => prev.filter((ci) => ci.item.id !== itemId));
+      setCart((prev) => prev.filter((ci) => String(ci.item.id) !== String(itemId)));
     } else {
       setCart((prev) =>
-        prev.map((ci) => (ci.item.id === itemId ? { ...ci, quantity } : ci))
+        prev.map((ci) => (String(ci.item.id) === String(itemId) ? { ...ci, quantity } : ci))
       );
     }
   }, []);
 
-  const removeFromCart = useCallback((itemId: string) => {
+  const removeFromCart = useCallback((itemId: string | number) => {
     soundEffects.playWandClick();
-    setCart((prev) => prev.filter((ci) => ci.item.id !== itemId));
+    setCart((prev) => prev.filter((ci) => String(ci.item.id) !== String(itemId)));
   }, []);
 
   const clearCart = useCallback(() => {
     setCart([]);
   }, []);
 
-  const setActiveOrderId = useCallback((id: string | null) => {
+  const setActiveOrderId = useCallback((id: string | number | null) => {
     setActiveOrderIdState(id);
   }, []);
 
@@ -487,30 +557,43 @@ export function CafeProvider({ children }: { children: React.ReactNode }) {
     (orderData: {
       customer: CustomerDetails;
       paymentMethod: PaymentMethod;
-    }): string => {
+    }): number => {
       const randomDigits = Math.floor(1000 + Math.random() * 9000);
-      const newOrderId = `ORD-${randomDigits}`;
+      const newOrderId = randomDigits;
       const now = new Date();
+      const isoTime = now.toISOString();
 
       const orderItems: OrderItem[] = cart.map((ci) => ({
         menuItemId: ci.item.id,
         name: ci.item.name,
         quantity: ci.quantity,
         unitPrice: ci.item.price,
+        unit_price: ci.item.price,
         lineTotal: ci.item.price * ci.quantity,
+        line_total: ci.item.price * ci.quantity,
       }));
 
       const newOrder: Order = {
         id: newOrderId,
-        createdAt: now.toISOString(),
+        created_at: isoTime,
+        createdAt: isoTime,
+        customer_name: orderData.customer.fullName,
         customer: orderData.customer,
+        phone: orderData.customer.phone,
+        delivery_address: orderData.customer.address,
+        items_summary: cart.map((ci) => `${ci.item.name} (x${ci.quantity})`).join(", "),
         items: orderItems,
         subtotal: cartSubtotal,
-        deliveryFee,
+        delivery_fee: deliveryFee,
+        total_amount: finalTotal,
         total: finalTotal,
+        payment_method: orderData.paymentMethod,
         paymentMethod: orderData.paymentMethod,
+        payment_status: orderData.paymentMethod === "UPI" ? "Completed" : "Pending",
         paymentStatus: orderData.paymentMethod === "UPI" ? "Completed" : "Pending",
+        order_status: "Placed",
         status: "Placed",
+        assigned_rider: null,
         statusMessage: "Your order has been placed. Waiting for barista confirmation in the Great Hall.",
       };
 
@@ -530,9 +613,9 @@ export function CafeProvider({ children }: { children: React.ReactNode }) {
   );
 
   const updateOrderStatus = useCallback(
-    (orderId: string, status: OrderStatus, courier?: string) => {
+    (orderId: string | number, status: OrderStatus, courier?: string) => {
       const updatedOrders = orders.map((order) => {
-        if (order.id === orderId) {
+        if (String(order.id) === String(orderId)) {
           let statusMessage = "Status updated.";
           if (status === "Accepted") {
             statusMessage = "Your order has been accepted! Queued at brewing station.";
@@ -549,8 +632,11 @@ export function CafeProvider({ children }: { children: React.ReactNode }) {
           return {
             ...order,
             status,
+            order_status: status,
             assignedCourier: courier !== undefined ? courier : order.assignedCourier,
+            assigned_rider: courier !== undefined ? courier : order.assigned_rider,
             paymentStatus: status === "Delivered" ? ("Completed" as const) : order.paymentStatus,
+            payment_status: status === "Delivered" ? ("Completed" as const) : order.payment_status,
             statusMessage,
           };
         }
@@ -571,23 +657,23 @@ export function CafeProvider({ children }: { children: React.ReactNode }) {
 
   // Convenience aliases for staff action triggers
   const acceptOrder = useCallback(
-    (orderId: string) => updateOrderStatus(orderId, "Accepted"),
+    (orderId: string | number) => updateOrderStatus(orderId, "Accepted"),
     [updateOrderStatus]
   );
 
   const startBrewingOrder = useCallback(
-    (orderId: string) => updateOrderStatus(orderId, "Brewing"),
+    (orderId: string | number) => updateOrderStatus(orderId, "Brewing"),
     [updateOrderStatus]
   );
 
   const assignCourier = useCallback(
-    (orderId: string, courierName: string) =>
+    (orderId: string | number, courierName: string) =>
       updateOrderStatus(orderId, "Out for Delivery", courierName),
     [updateOrderStatus]
   );
 
   const markOrderDelivered = useCallback(
-    (orderId: string) => updateOrderStatus(orderId, "Delivered"),
+    (orderId: string | number) => updateOrderStatus(orderId, "Delivered"),
     [updateOrderStatus]
   );
 
@@ -610,7 +696,9 @@ export function CafeProvider({ children }: { children: React.ReactNode }) {
         name: item.name,
         quantity: q,
         unitPrice: item.price,
+        unit_price: item.price,
         lineTotal: item.price * q,
+        line_total: item.price * q,
       };
     });
 
@@ -619,23 +707,34 @@ export function CafeProvider({ children }: { children: React.ReactNode }) {
     const tot = sub + fee;
     const payMode: PaymentMethod = Math.random() > 0.4 ? "UPI" : "COD";
     const ordNum = Math.floor(1000 + Math.random() * 9000);
+    const nowIso = new Date().toISOString();
 
     const simulated: Order = {
-      id: `ORD-${ordNum}`,
-      createdAt: new Date().toISOString(),
+      id: ordNum,
+      created_at: nowIso,
+      createdAt: nowIso,
+      customer_name: picked.name,
       customer: {
         fullName: picked.name,
         phone: picked.phone,
         address: picked.addr,
         deliveryNotes: "Deliver without alerting the prefects.",
       },
+      phone: picked.phone,
+      delivery_address: picked.addr,
+      items_summary: items.map((i) => `${i.name} (x${i.quantity})`).join(", "),
       items,
       subtotal: sub,
-      deliveryFee: fee,
+      delivery_fee: fee,
+      total_amount: tot,
       total: tot,
+      payment_method: payMode,
       paymentMethod: payMode,
+      payment_status: payMode === "UPI" ? "Completed" : "Pending",
       paymentStatus: payMode === "UPI" ? "Completed" : "Pending",
+      order_status: "Placed",
       status: "Placed",
+      assigned_rider: null,
       statusMessage: "Your order has been received in the Great Hall queue.",
     };
 

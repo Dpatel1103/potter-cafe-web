@@ -48,7 +48,7 @@ export default function StorefrontPage() {
         selectedCategory === "All" || item.category === selectedCategory;
       const matchesSearch =
         item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (Boolean(item.description) && item.description!.toLowerCase().includes(searchQuery.toLowerCase())) ||
         (Boolean(item.lore) && item.lore!.toLowerCase().includes(searchQuery.toLowerCase())) ||
         (Boolean(item.badge) && item.badge!.toLowerCase().includes(searchQuery.toLowerCase()));
 

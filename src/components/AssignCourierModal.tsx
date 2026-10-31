@@ -9,7 +9,7 @@ interface AssignCourierModalProps {
   order: Order | null;
   isOpen: boolean;
   onClose: () => void;
-  onAssign: (orderId: string, courierName: string) => void;
+  onAssign: (orderId: string | number, courierName: string) => void;
 }
 
 export function AssignCourierModal({
